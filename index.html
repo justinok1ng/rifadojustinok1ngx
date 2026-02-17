@@ -11,7 +11,7 @@
 
     <meta property="og:title" content="ROLETAS PREMIADAS">
     <meta property="og:description" content="Sua chance de mudar de vida chegou!">
-    <meta property="og:image" content="/public/images/capa.png">
+    <meta property="og:image" content="/public/images/principal.jpg">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Sorteios Online">
 
@@ -157,7 +157,7 @@
                     <i class="bi bi-caret-right-fill slide-control" id="nextSlide"></i>
                 </div>
 
-                <div class="img-single" id="imgSingle" style="border: none; background-image: url('/public/images/capa.png');"></div>
+                <div class="img-single" id="imgSingle" style="border: none; background-image: url('/public/images/principal.jpg'); background-size: cover; background-position: center;"></div>
                 
                 <div class="background-gradient" style="border-left: none; border-right: none;">
                     <span class="badge-adquira" style="background-color: #1a1a1a">Adquira já!</span>
@@ -567,9 +567,34 @@
 </div>
 
 <script>
-// Lógica de Scripts Unificada
+// Lógica de Scripts Unificada (COM CARROSSEL FUNCIONANDO)
 document.addEventListener('DOMContentLoaded', function(){
-    // 1. Timer Promoção
+    // 1. CARROSSEL DE IMAGENS (Lógica Nova)
+    const slides = [
+        '/public/images/principal.jpg',
+        '/public/images/secund.jpg',
+        '/public/images/terci.jpg'
+    ];
+    let currentIndex = 0;
+    const imgSingle = document.getElementById('imgSingle');
+    const counter = document.getElementById('imageCounter');
+
+    function updateSlide() {
+        imgSingle.style.backgroundImage = `url('${slides[currentIndex]}')`;
+        counter.innerText = `${currentIndex + 1}/${slides.length}`;
+    }
+
+    document.getElementById('prevSlide').addEventListener('click', () => {
+        currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
+        updateSlide();
+    });
+
+    document.getElementById('nextSlide').addEventListener('click', () => {
+        currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
+        updateSlide();
+    });
+
+    // 2. Timer Promoção
     const finalDate = new Date("2026-12-31T23:59:59");
     const totalTime = finalDate - new Date("2026-01-01T00:00:00");
     if (document.querySelector('.progress-bar-inner')) {
@@ -588,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function(){
         }, 1000);
     }
 
-    // 2. Caixas Surpresas
+    // 3. Caixas Surpresas
     window.csShowMore = function(){
         const box = document.getElementById('csBox');
         if(!box) return;
@@ -596,7 +621,7 @@ document.addEventListener('DOMContentLoaded', function(){
         document.getElementById('csMoreBtn').style.display = 'none';
     };
 
-    // 3. Modais Prêmios
+    // 4. Modais Prêmios
     const prizeBtn = document.getElementById('prize-open');
     const modalPrize = document.getElementById('modal-prizes');
     if(prizeBtn && modalPrize){
@@ -604,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function(){
         modalPrize.querySelector('.bi-x-lg').onclick = () => modalPrize.style.display = 'none';
     }
 
-    // 4. Quantidade e Checkout
+    // 5. Quantidade e Checkout
     const inputQty = document.querySelector('.input-quantity');
     const priceEl = document.querySelector('.price-participate');
     const unitPrice = parseFloat(document.querySelector('.price-value')?.innerText.replace(',','.') || 0.03);
@@ -638,7 +663,7 @@ document.addEventListener('DOMContentLoaded', function(){
     inputQty?.addEventListener('input', updatePrice);
     updatePrice();
 
-    // 5. Fluxo Checkout
+    // 6. Fluxo Checkout
     const step1 = document.getElementById('ckStep1');
     const step2 = document.getElementById('ckStep2');
     const step3 = document.getElementById('ckStep3');
@@ -693,7 +718,7 @@ document.addEventListener('DOMContentLoaded', function(){
             loading.classList.remove('is-open');
             const total = (parseInt(inputQty.value) * unitPrice).toFixed(2).replace('.',',');
             
-            // Dados PIX Simulados (Sem nome Draccu)
+            // Dados PIX Simulados
             const code = "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913SORTEIOS_BR6008BRASILIA62070503***6304E2CA";
             document.getElementById('pixCopyPaste').innerText = code;
             document.getElementById('pixTotal').innerText = total;
@@ -737,5 +762,3 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </body>
 </html>
-
-
