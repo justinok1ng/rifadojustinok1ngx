@@ -77,7 +77,7 @@
         .ck-btn { width: 100%; border: none; cursor: pointer; background: #ff3b3b; color: #fff; font-weight: 900; padding: 14px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .ck-link { display: block; text-align: center; margin-top: 10px; color: #ff4a4a; font-weight: 900; text-decoration: none; font-size: 13px; }
 
-        /* Loading & Pix */
+        /* Loading &  */
         .ck-loading-wrap { width: min(720px, 92vw); margin: 0 auto; padding: 90px 0 0; }
         .ck-loading-box { background: #1f2a38; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 24px 18px; color: #fff; display: flex; align-items: center; gap: 16px; justify-content: center; }
         .ck-dots { display: flex; gap: 8px; align-items: center; }
@@ -86,20 +86,20 @@
         .ck-dots span:nth-child(3) { animation-delay: .30s; }
         @keyframes dot { 0%, 100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-4px); } }
 
-        .pix-card { width: min(720px, 92vw); margin: 20px auto 60px; background: #1a2330; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 60px rgba(0,0,0,.45); }
-        .pix-header { padding: 16px; background: #1f2a38; border-bottom: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 900; }
-        .pix-body { padding: 16px; color: #e5e7eb; }
-        .pix-steps { margin-top: 12px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 12px; }
-        .pix-step { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; }
-        .pix-step .n { width: 22px; height: 22px; border-radius: 999px; background: #ff3b3b; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; flex: 0 0 auto; font-size: 12px; }
-        .pix-code-row { display: flex; gap: 10px; align-items: center; background: #0f1722; border: 1px solid rgba(255,255,255,.10); border-radius: 10px; padding: 10px; margin: 12px 0; }
-        .pix-code { flex: 1; font-family: ui-monospace, monospace; font-size: 12px; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .pix-copy { border: none; cursor: pointer; background: #ff3b3b; color: #fff; font-weight: 900; padding: 10px 12px; border-radius: 10px; }
-        .pix-qr-wrap { text-align: center; margin-top: 12px; display: none; }
-        .pix-qr-wrap img { width: 280px; max-width: 80vw; background: #fff; padding: 12px; border-radius: 10px; }
-        .pix-toggle { display: flex; justify-content: center; margin-top: 10px; }
-        .pix-toggle button { border: none; cursor: pointer; background: #2a3442; color: #fff; font-weight: 900; padding: 10px 14px; border-radius: 10px; }
-        .pix-warn { margin-top: 12px; background: #7b5a00; border: 1px solid rgba(255,255,255,.10); color: #fff; border-radius: 10px; padding: 12px; font-size: 12px; line-height: 1.35; }
+        .-card { width: min(720px, 92vw); margin: 20px auto 60px; background: #1a2330; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 60px rgba(0,0,0,.45); }
+        .-header { padding: 16px; background: #1f2a38; border-bottom: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 900; }
+        .-body { padding: 16px; color: #e5e7eb; }
+        .-steps { margin-top: 12px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 12px; }
+        .-step { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; }
+        .-step .n { width: 22px; height: 22px; border-radius: 999px; background: #ff3b3b; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; flex: 0 0 auto; font-size: 12px; }
+        .-code-row { display: flex; gap: 10px; align-items: center; background: #0f1722; border: 1px solid rgba(255,255,255,.10); border-radius: 10px; padding: 10px; margin: 12px 0; }
+        .-code { flex: 1; font-family: ui-monospace, monospace; font-size: 12px; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .-copy { border: none; cursor: pointer; background: #ff3b3b; color: #fff; font-weight: 900; padding: 10px 12px; border-radius: 10px; }
+        .-qr-wrap { text-align: center; margin-top: 12px; display: none; }
+        .-qr-wrap img { width: 280px; max-width: 80vw; background: #fff; padding: 12px; border-radius: 10px; }
+        .-toggle { display: flex; justify-content: center; margin-top: 10px; }
+        .-toggle button { border: none; cursor: pointer; background: #2a3442; color: #fff; font-weight: 900; padding: 10px 14px; border-radius: 10px; }
+        .-warn { margin-top: 12px; background: #7b5a00; border: 1px solid rgba(255,255,255,.10); color: #fff; border-radius: 10px; padding: 12px; font-size: 12px; line-height: 1.35; }
 
         .container-double-chance { background: linear-gradient(90deg, #1a1a1a, #484848); }
         .progress-bar-inner { height: 40px; width: 100%; background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #313131 10px, #313131 20px); background-size: 195% 140%; animation: progress-animation 3s linear infinite; }
@@ -533,8 +533,8 @@
   </div>
 </div>
 
-<div id="ckPix">
-  <div class="pix-card">
+<div id="ck">
+  <div class="-card">
     <div class="pix-header">⏳ Aguardando pagamento!</div>
     <div class="pix-body">
       <div style="opacity:.9;font-size:13px;">Realize o pagamento</div>
@@ -724,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // ✅ chama seu backend (ex: Node/Express)
     // troque a URL para o seu domínio quando subir
-    const resp = await fetch("http://localhost:3333/api/pix/create", {
+    const resp = await fetch("/api/pix/create", ...) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -812,5 +812,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </body>
 </html>
+
 
 
