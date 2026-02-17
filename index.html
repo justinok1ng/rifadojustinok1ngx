@@ -709,33 +709,83 @@ document.addEventListener('DOMContentLoaded', function(){
 
     document.getElementById('ckChangeAccount').onclick = () => { closeAll(); open(step2); };
 
-    document.getElementById('ckCreatePayment').onclick = () => {
-        closeAll();
-        loading.classList.add('is-open');
-        home.classList.add('is-hidden');
+    document.getElementById('ckCreatePayment').onclick = async () => {
+  try {
+    closeAll();
+    loading.classList.add('is-open');
+    home.classList.add('is-hidden');
 
-        setTimeout(() => {
-            loading.classList.remove('is-open');
-            const total = (parseInt(inputQty.value) * unitPrice).toFixed(2).replace('.',',');
-            
-            // Dados PIX Simulados
-            const code = "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913SORTEIOS_BR6008BRASILIA62070503***6304E2CA";
-            document.getElementById('pixCopyPaste').innerText = code;
-            document.getElementById('pixTotal').innerText = total;
-            document.getElementById('pixBuyer').innerText = document.getElementById('ckName').value;
-            document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
-            document.getElementById('pixQrImg').src = "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" + encodeURIComponent(code);
+    const qty = parseInt(inputQty.value) || 1;
+    const totalNumber = qty * unitPrice;
+    const totalBR = totalNumber.toFixed(2).replace('.', ',');
 
-            // Timer PIX
-            let t = 545;
-            const tEl = document.getElementById('pixTimer');
-            setInterval(() => {
-                if(t>0) { t--; tEl.innerText = `${Math.floor(t/60).toString().padStart(2,'0')}:${(t%60).toString().padStart(2,'0')}`; }
-            }, 1000);
+    const name = document.getElementById('ckName').value.trim();
+    const phone = document.getElementById('ckPhone2').value.trim();
 
-            pix.classList.add('is-open');
-        }, 2000);
-    };
+    // ✅ chama seu backend (ex: Node/Express)
+    // troque a URL para o seu domínio quando subir
+    const resp = await fetch("http://localhost:3333/api/pix/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        phone,
+        amount: Number(totalNumber.toFixed(2)), // valor variável
+        product: "ROLETAS PREMIADAS",
+        qty
+      })
+    });
+
+    const data = await resp.json().catch(() => ({}));
+
+    if (!resp.ok) {
+      // se o provedor exigir CPF, seu backend deve devolver error: "REQUIRES_CPF"
+      loading.classList.remove('is-open');
+      home.classList.remove('is-hidden');
+      alert(data?.error === "REQUIRES_CPF"
+        ? "Esse provedor exige CPF. Troque de gateway ou peça liberação no suporte."
+        : "Falha ao gerar PIX. Tente novamente.");
+      return;
+    }
+
+    // ✅ aqui vem do backend:
+    // data.pix_code  -> copia e cola
+    // data.identifier -> id da transação (opcional pra status)
+    const code = data.pix_code || data.qrText || data.qr_code_text;
+    if (!code) {
+      loading.classList.remove('is-open');
+      home.classList.remove('is-hidden');
+      alert("Não veio o código PIX do servidor.");
+      return;
+    }
+
+    loading.classList.remove('is-open');
+
+    // preenche UI PIX
+    document.getElementById('pixCopyPaste').innerText = code;
+    document.getElementById('pixTotal').innerText = totalBR;
+    document.getElementById('pixBuyer').innerText = name;
+    document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
+
+    // gera QR local (mantive seu jeito com Google Chart — funciona)
+    document.getElementById('pixQrImg').src =
+      "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" + encodeURIComponent(code);
+
+    // reinicia o timer do PIX (evita vários setInterval acumulando)
+    startPixTimer(545);
+
+    pix.classList.add('is-open');
+
+    // opcional: guardar id pra consultar status depois
+    window.__pixIdentifier = data.identifier || data.transactionId || null;
+
+  } catch (err) {
+    loading.classList.remove('is-open');
+    home.classList.remove('is-hidden');
+    alert("Erro de conexão ao gerar PIX.");
+  }
+};
+
 
     // Copiar e Toggle
     document.getElementById('pixCopyBtn').onclick = function(){
@@ -762,4 +812,5 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </body>
 </html>
+
 
