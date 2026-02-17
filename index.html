@@ -11,7 +11,7 @@
 
     <meta property="og:title" content="ROLETAS PREMIADAS">
     <meta property="og:description" content="Sua chance de mudar de vida chegou!">
-    <meta property="og:image" content="/public/images/68a4f9e8b1529-Design sem nome (9).png">
+    <meta property="og:image" content="/public/images/capa.png">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Sorteios Online">
 
@@ -26,49 +26,19 @@
     <style>
         /* CSS de Emergência */
         body { background-color: #161c24; color: #fff; }
-        
-        /* Trava scroll quando modal/overlay abre */
         body.modal-travado { overflow:hidden !important; }
-
-        /* Some o site quando estiver no PIX/Loading */
-        #pageHome.is-hidden { 
-            display:none !important; 
-            pointer-events: none !important;
-            user-select: none !important;
-        }
+        #pageHome.is-hidden { display:none !important; pointer-events: none !important; user-select: none !important; }
 
         /* PIX e LOADING */
         #ckPix, #ckLoading {
-            position: fixed !important;
-            inset: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 2147483647 !important;
-            background: rgba(0,0,0,.75) !important;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .25s ease;
-            display: none;
+            position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important;
+            z-index: 2147483647 !important; background: rgba(0,0,0,.75) !important;
+            opacity: 0; pointer-events: none; transition: opacity .25s ease; display: none;
         }
+        #ckPix.is-open, #ckLoading.is-open { opacity: 1; pointer-events: auto; display: block !important; }
 
-        #ckPix.is-open, #ckLoading.is-open {
-            opacity: 1;
-            pointer-events: auto;
-            display: block !important;
-        }
-
-        /* ===== Caixa Surpresas (Styles) ===== */
-        .cs-box {
-            background: #1f2832;
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 12px;
-            padding: 10px;
-            color: #fff;
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-            max-width: 560px;
-            position: relative;
-            z-index: 999;
-        }
+        /* Estilos Gerais */
+        .cs-box { background: #1f2832; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 10px; color: #fff; font-family: system-ui, -apple-system, sans-serif; max-width: 560px; position: relative; z-index: 999; }
         .cs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .cs-title { display: flex; gap: 8px; font-weight: 800; font-size: 14px; }
         .cs-title small { color: rgba(255,255,255,.35); font-size: 11px; }
@@ -84,10 +54,10 @@
         .cs-more-btn { margin-top: 8px; width: 100%; background: transparent; border: none; color: #ff3b3b; font-weight: 900; font-size: 11px; cursor: pointer; position: relative; z-index: 999999; pointer-events: auto; padding: 6px 0; }
         .cs-row.is-hidden { display: none; }
 
-        /* ===== Styles Modais de Checkout ===== */
+        /* Checkout Styles */
         .ck-overlay { display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.75); z-index: 2147483647; }
         .ck-overlay.is-open { display: block; }
-        .ck-card { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, 92vw); background: #1a2330; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.75); overflow: hidden; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; color: #e5e7eb; }
+        .ck-card { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, 92vw); background: #1a2330; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.75); overflow: hidden; font-family: system-ui, sans-serif; color: #e5e7eb; }
         .ck-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #1f2a38; border-bottom: 1px solid rgba(255,255,255,.07); font-weight: 900; }
         .ck-header .left { display: flex; align-items: center; gap: 10px; }
         .ck-close { background: transparent; border: none; color: rgba(255,255,255,.65); font-size: 22px; cursor: pointer; line-height: 1; }
@@ -107,7 +77,7 @@
         .ck-btn { width: 100%; border: none; cursor: pointer; background: #ff3b3b; color: #fff; font-weight: 900; padding: 14px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .ck-link { display: block; text-align: center; margin-top: 10px; color: #ff4a4a; font-weight: 900; text-decoration: none; font-size: 13px; }
 
-        /* ===== Loading Screen ===== */
+        /* Loading & Pix */
         .ck-loading-wrap { width: min(720px, 92vw); margin: 0 auto; padding: 90px 0 0; }
         .ck-loading-box { background: #1f2a38; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 24px 18px; color: #fff; display: flex; align-items: center; gap: 16px; justify-content: center; }
         .ck-dots { display: flex; gap: 8px; align-items: center; }
@@ -116,7 +86,6 @@
         .ck-dots span:nth-child(3) { animation-delay: .30s; }
         @keyframes dot { 0%, 100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-4px); } }
 
-        /* ===== PIX Screen ===== */
         .pix-card { width: min(720px, 92vw); margin: 20px auto 60px; background: #1a2330; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 60px rgba(0,0,0,.45); }
         .pix-header { padding: 16px; background: #1f2a38; border-bottom: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 900; }
         .pix-body { padding: 16px; color: #e5e7eb; }
@@ -124,7 +93,7 @@
         .pix-step { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; }
         .pix-step .n { width: 22px; height: 22px; border-radius: 999px; background: #ff3b3b; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; flex: 0 0 auto; font-size: 12px; }
         .pix-code-row { display: flex; gap: 10px; align-items: center; background: #0f1722; border: 1px solid rgba(255,255,255,.10); border-radius: 10px; padding: 10px; margin: 12px 0; }
-        .pix-code { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 12px; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .pix-code { flex: 1; font-family: ui-monospace, monospace; font-size: 12px; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .pix-copy { border: none; cursor: pointer; background: #ff3b3b; color: #fff; font-weight: 900; padding: 10px 12px; border-radius: 10px; }
         .pix-qr-wrap { text-align: center; margin-top: 12px; display: none; }
         .pix-qr-wrap img { width: 280px; max-width: 80vw; background: #fff; padding: 12px; border-radius: 10px; }
@@ -132,7 +101,6 @@
         .pix-toggle button { border: none; cursor: pointer; background: #2a3442; color: #fff; font-weight: 900; padding: 10px 14px; border-radius: 10px; }
         .pix-warn { margin-top: 12px; background: #7b5a00; border: 1px solid rgba(255,255,255,.10); color: #fff; border-radius: 10px; padding: 12px; font-size: 12px; line-height: 1.35; }
 
-        /* Estilos específicos de Double Chance e Progress Bar */
         .container-double-chance { background: linear-gradient(90deg, #1a1a1a, #484848); }
         .progress-bar-inner { height: 40px; width: 100%; background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #313131 10px, #313131 20px); background-size: 195% 140%; animation: progress-animation 3s linear infinite; }
         .progress-bar-double-chance { background-color: #1a1a1a; }
@@ -145,7 +113,7 @@
         <div class="container-nav">
             <div class="header-nav">
                 <a href="/">
-                    <img src="/public/images/68a4f68cc89f2-67fe452237d33-xcxcxcx.png" alt="logo">
+                    <img src="/public/images/logo.png" alt="logo" style="max-height: 40px;">
                 </a>
                 <img src="/public/images/menu.svg" width="30px" class="bi bi-filter-right" id="showPopupButton">
             </div>
@@ -153,7 +121,7 @@
             <div class="popup-nav" style="background-color: #1a1a1a;">
                 <div class="container-popup-nav">
                     <div class="header-popup">
-                        <a href="/"><img src="/public/images/68a4f68cc89f2-67fe452237d33-xcxcxcx.png" alt="logo"></a>
+                        <a href="/"><img src="/public/images/logo.png" alt="logo" style="max-height: 40px;"></a>
                         <i class="bi bi-x-circle" id="closePopupButton"></i>
                     </div>
                     
@@ -182,15 +150,14 @@
         <div class="back-range" style="background-color: #1a1a1a;"></div>
         <div class="container" style="padding: 0; background-color: #1f2832; border: none;">
             
-            <div class="info-single" data-image-raffle="68a4f9e8b1529-Design sem nome (9).png" data-image-raffle-galery="68a4f9e8b198f-Design sem nome (13).png, 68a4f9e8b1de1-Design sem nome (12).png">
-
+            <div class="info-single">
                 <div class="carousel-controls">
                     <i class="bi bi-caret-left-fill slide-control" id="prevSlide"></i>
                     <span id="imageCounter">1/3</span>
                     <i class="bi bi-caret-right-fill slide-control" id="nextSlide"></i>
                 </div>
 
-                <div class="img-single" id="imgSingle" style="border: none; background-image: url('/public/images/68a4f9e8b1529-Design sem nome (9).png')"></div>
+                <div class="img-single" id="imgSingle" style="border: none; background-image: url('/public/images/capa.png');"></div>
                 
                 <div class="background-gradient" style="border-left: none; border-right: none;">
                     <span class="badge-adquira" style="background-color: #1a1a1a">Adquira já!</span>
@@ -510,24 +477,20 @@
         <div class="i">i</div>
         <div>Você está adquirindo <b id="ckQty2">100</b> unidade(s) do produto <b id="ckProduct2">ROLETAS PREMIADAS</b></div>
       </div>
-      
       <div class="ck-label">Informe seu telefone *</div>
       <div class="ck-row">
          <div class="ck-country"><img class="ck-flag" src="https://flagcdn.com/w20/br.png" alt="BR"></div>
          <input id="ckPhone2" class="ck-input" type="tel" inputmode="numeric" placeholder="(DDD) 9XXXX-XXXX">
       </div>
-
       <div class="ck-label">Confirme o telefone *</div>
       <div class="ck-row">
          <div class="ck-country"><img class="ck-flag" src="https://flagcdn.com/w20/br.png" alt="BR"></div>
          <input id="ckPhoneConfirm" class="ck-input" type="tel" inputmode="numeric" placeholder="Repita o telefone">
       </div>
-
       <div class="ck-label">Nome Completo *</div>
       <div class="ck-row">
         <input id="ckName" class="ck-input" type="text" placeholder="Nome Completo" autocomplete="name">
       </div>
-
       <button class="ck-btn" id="ckGoStep3" type="button">Concluir Reserva</button>
       <a href="#" class="ck-link" id="ckBackTo1">Cancelar cadastro</a>
     </div>
@@ -604,239 +567,170 @@
 </div>
 
 <script>
-// Logica do Timer da Promoção
-document.addEventListener('DOMContentLoaded', function () {
-    // Datas fixas para evitar erro de NaN
-    const initialDate = new Date("2026-01-01T00:00:00");
-    const finalDate = new Date("2026-12-31T23:59:59");
-    const totalTime = finalDate - initialDate;
-
-    if (document.querySelector('.progress-bar-inner')) {
-        const timerElement = document.createElement('p');
-        timerElement.classList.add('timer');
-        document.querySelector('.progress-bar-double-chance').appendChild(timerElement);
-
-        function updateTimer() {
-            const now = new Date();
-            const timeRemaining = finalDate - now; 
-            if (timeRemaining <= 0) {
-                document.querySelector('.progress-bar-inner').style.width = '100%';
-                timerElement.innerText = 'PROMOÇÃO FINALIZADA!';
-                return;
-            }
-            const secondsRemaining = Math.floor(timeRemaining / 1000);
-            const hours = Math.floor(secondsRemaining / 3600); 
-            const minutes = Math.floor((secondsRemaining % 3600) / 60); 
-            const seconds = secondsRemaining % 60; 
-            const formattedTime = `ENCERRA EM ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            const progressWidth = (1 - timeRemaining / totalTime) * 100;
-            document.querySelector('.progress-bar-inner').style.width = `${progressWidth}%`;
-            timerElement.innerText = formattedTime;
-        }
-        setInterval(updateTimer, 1000);
-        document.querySelector('.progress-bar-double-chance').style.display = 'block';
-    }
-});
-
-// Lógica de Caixas Surpresas
-window.csShowMore = function(){
-    var box = document.getElementById('csBox');
-    if(!box) return;
-    var hidden = box.querySelectorAll('.cs-row.is-hidden');
-    for (var i = 0; i < hidden.length; i++){
-        hidden[i].classList.remove('is-hidden');
-    }
-    var btn = document.getElementById('csMoreBtn');
-    if(btn) btn.style.display = 'none';
-};
-
-// Lógica de Modais de Prêmios
+// Lógica de Scripts Unificada
 document.addEventListener('DOMContentLoaded', function(){
-    const prizeOpenButton = document.getElementById('prize-open');
-    const modalPrizes = document.getElementById('modal-prizes');
-    const closeModalIcon = document.querySelector('#modal-prizes .bi-x-lg');
-    if (prizeOpenButton && modalPrizes) {
-        prizeOpenButton.addEventListener('click', () => modalPrizes.style.display = 'flex');
-    }
-    if (closeModalIcon && modalPrizes) {
-        closeModalIcon.addEventListener('click', () => modalPrizes.style.display = 'none');
-    }
-});
-
-// Lógica Principal de Quantidade e Preço
-document.addEventListener('DOMContentLoaded', function () {
-    const totalNumbersAvailable = 490780;
-    const inputQuantity = document.querySelector('.input-quantity');
-    const priceValueEl = document.querySelector('.price-value');
-    const priceParticipateEl = document.querySelector('.price-participate');
-    const selectCards = document.querySelectorAll('.content-select .select');
-    const spins = document.querySelectorAll('.spins-content');
-    const btnMinus = document.querySelector('.js-qty-minus');
-    const btnPlus  = document.querySelector('.js-qty-plus');
-
-    function toNumberBR(text) { return parseFloat(String(text).trim().replace(/\./g, '').replace(',', '.')) || 0; }
-    function formatBR(value) { return (Math.round(value * 100) / 100).toFixed(2).replace('.', ','); }
-    
-    function recalc() {
-        if (!inputQuantity || !priceValueEl || !priceParticipateEl) return;
-        let qty = parseInt(inputQuantity.value, 10) || 1;
-        if(qty < 1) qty = 1;
-        inputQuantity.value = qty;
-        const unit = toNumberBR(priceValueEl.innerText);
-        const total = qty * unit;
-        priceParticipateEl.innerText = formatBR(total);
+    // 1. Timer Promoção
+    const finalDate = new Date("2026-12-31T23:59:59");
+    const totalTime = finalDate - new Date("2026-01-01T00:00:00");
+    if (document.querySelector('.progress-bar-inner')) {
+        const timerEl = document.createElement('p');
+        timerEl.classList.add('timer');
+        document.querySelector('.progress-bar-double-chance').appendChild(timerEl);
+        document.querySelector('.progress-bar-double-chance').style.display = 'block';
+        setInterval(() => {
+            const remain = finalDate - new Date();
+            if (remain <= 0) { timerEl.innerText = 'FINALIZADO'; return; }
+            const h = Math.floor(remain/3600000).toString().padStart(2,'0');
+            const m = Math.floor((remain%3600000)/60000).toString().padStart(2,'0');
+            const s = Math.floor((remain%60000)/1000).toString().padStart(2,'0');
+            timerEl.innerText = `ENCERRA EM ${h}:${m}:${s}`;
+            document.querySelector('.progress-bar-inner').style.width = `${(1 - remain/totalTime)*100}%`;
+        }, 1000);
     }
 
-    // Clique nos cards de quantidade
-    selectCards.forEach(card => {
-        card.addEventListener('click', function () {
-            const h3 = card.querySelector('h3');
-            if (h3) {
-                inputQuantity.value = toNumberBR(h3.innerText);
-                recalc();
-            }
-        });
+    // 2. Caixas Surpresas
+    window.csShowMore = function(){
+        const box = document.getElementById('csBox');
+        if(!box) return;
+        box.querySelectorAll('.cs-row.is-hidden').forEach(el => el.classList.remove('is-hidden'));
+        document.getElementById('csMoreBtn').style.display = 'none';
+    };
+
+    // 3. Modais Prêmios
+    const prizeBtn = document.getElementById('prize-open');
+    const modalPrize = document.getElementById('modal-prizes');
+    if(prizeBtn && modalPrize){
+        prizeBtn.onclick = () => modalPrize.style.display = 'flex';
+        modalPrize.querySelector('.bi-x-lg').onclick = () => modalPrize.style.display = 'none';
+    }
+
+    // 4. Quantidade e Checkout
+    const inputQty = document.querySelector('.input-quantity');
+    const priceEl = document.querySelector('.price-participate');
+    const unitPrice = parseFloat(document.querySelector('.price-value')?.innerText.replace(',','.') || 0.03);
+
+    function updatePrice() {
+        let q = parseInt(inputQty.value) || 1;
+        if(q<1) q=1; inputQty.value = q;
+        priceEl.innerText = (q * unitPrice).toFixed(2).replace('.',',');
+    }
+
+    document.querySelectorAll('.select').forEach(sel => {
+        sel.onclick = () => {
+            inputQty.value = parseInt(sel.querySelector('h3').innerText);
+            updatePrice();
+        }
     });
-
-    // Clique nos spins
-    spins.forEach(spin => {
-        spin.addEventListener('click', function () {
-            const valSpan = spin.querySelector('[class^="spin-value"]');
-            if(valSpan) {
-                inputQuantity.value = toNumberBR(valSpan.innerText);
-                recalc();
-                // Simula clique no botão de participar
+    
+    document.querySelectorAll('.spins-content').forEach(spin => {
+        spin.onclick = () => {
+            const val = spin.querySelector('[class^="spin-value"]');
+            if(val) {
+                inputQty.value = parseInt(val.innerText);
+                updatePrice();
                 document.querySelector('.btn-add-to-cart').click();
             }
-        });
+        }
     });
 
-    if (btnMinus) btnMinus.addEventListener('click', function () { inputQuantity.value = parseInt(inputQuantity.value)-1; recalc(); });
-    if (btnPlus) btnPlus.addEventListener('click', function () { inputQuantity.value = parseInt(inputQuantity.value)+1; recalc(); });
-    if (inputQuantity) inputQuantity.addEventListener('input', recalc);
-    
-    recalc();
-});
+    document.querySelector('.js-qty-minus')?.addEventListener('click', ()=>{ inputQty.value--; updatePrice(); });
+    document.querySelector('.js-qty-plus')?.addEventListener('click', ()=>{ inputQty.value++; updatePrice(); });
+    inputQty?.addEventListener('input', updatePrice);
+    updatePrice();
 
-// Lógica Completa do Checkout e PIX
-document.addEventListener('DOMContentLoaded', function(){
-    function toNumberBR(text){ return parseFloat(String(text || '0').trim().replace(/\./g,'').replace(',','.')) || 0; }
-    const UNIT_PRICE = toNumberBR(document.querySelector('.price-value')?.innerText);
-
+    // 5. Fluxo Checkout
     const step1 = document.getElementById('ckStep1');
     const step2 = document.getElementById('ckStep2');
     const step3 = document.getElementById('ckStep3');
     const loading = document.getElementById('ckLoading');
     const pix = document.getElementById('ckPix');
-    const pageHome = document.getElementById('pageHome');
-    const inputQty = document.querySelector('.input-quantity');
+    const home = document.getElementById('pageHome');
 
-    function openOverlay(el){ el.classList.add('is-open'); el.setAttribute('aria-hidden','false'); document.body.classList.add('modal-travado'); }
-    function closeOverlay(el){ el.classList.remove('is-open'); el.setAttribute('aria-hidden','true'); document.body.classList.remove('modal-travado'); }
-    function closeAll(){ [step1,step2,step3].forEach(closeOverlay); }
+    const open = (el) => { el.classList.add('is-open'); document.body.classList.add('modal-travado'); };
+    const closeAll = () => { 
+        [step1,step2,step3].forEach(el => el.classList.remove('is-open')); 
+        document.body.classList.remove('modal-travado'); 
+    };
 
-    // Abrir Modal 1
-    document.querySelector('.btn-add-to-cart').addEventListener('click', function(e){
+    document.querySelector('.btn-add-to-cart').onclick = (e) => {
         e.preventDefault();
-        document.getElementById('ckQty').textContent = inputQty.value;
-        openOverlay(step1);
-    });
+        document.getElementById('ckQty').innerText = inputQty.value;
+        open(step1);
+    };
 
-    // Fechar modais
-    document.querySelectorAll('[data-ck-close]').forEach(b => b.addEventListener('click', closeAll));
+    document.querySelectorAll('[data-ck-close]').forEach(b => b.onclick = closeAll);
 
-    // Passo 1 -> 2
-    document.getElementById('ckGoStep2').addEventListener('click', function(){
+    document.getElementById('ckGoStep2').onclick = () => {
         const ph = document.getElementById('ckPhone').value;
-        if(ph.length < 8) return alert('Digite um telefone válido');
+        if(ph.length < 8) return alert('Telefone inválido');
         document.getElementById('ckPhone2').value = ph;
-        document.getElementById('ckQty2').textContent = inputQty.value;
-        closeOverlay(step1);
-        openOverlay(step2);
-    });
+        document.getElementById('ckQty2').innerText = inputQty.value;
+        closeAll(); open(step2);
+    };
 
-    // Voltar 2 -> 1
-    document.getElementById('ckBackTo1').addEventListener('click', function(){ closeOverlay(step2); openOverlay(step1); });
+    document.getElementById('ckBackTo1').onclick = () => { closeAll(); open(step1); };
 
-    // Passo 2 -> 3
-    document.getElementById('ckGoStep3').addEventListener('click', function(){
+    document.getElementById('ckGoStep3').onclick = () => {
         const p1 = document.getElementById('ckPhone2').value;
         const p2 = document.getElementById('ckPhoneConfirm').value;
         const nm = document.getElementById('ckName').value;
-        if(p1 !== p2) return alert('Telefones não conferem');
+        if(p1!==p2) return alert('Telefones não conferem');
         if(!nm) return alert('Digite seu nome');
-        
         document.getElementById('ckNameShow').innerText = nm;
         document.getElementById('ckPhoneShow').innerText = p1;
         document.getElementById('ckQty3').innerText = inputQty.value;
-        closeOverlay(step2);
-        openOverlay(step3);
-    });
+        closeAll(); open(step3);
+    };
 
-    // Alterar conta
-    document.getElementById('ckChangeAccount').addEventListener('click', function(){ closeOverlay(step3); openOverlay(step2); });
+    document.getElementById('ckChangeAccount').onclick = () => { closeAll(); open(step2); };
 
-    // Passo 3 -> PIX
-    document.getElementById('ckCreatePayment').addEventListener('click', function(){
+    document.getElementById('ckCreatePayment').onclick = () => {
         closeAll();
-        loading.classList.add('is-open'); // Mostra loading
-        pageHome.classList.add('is-hidden'); // Esconde site
+        loading.classList.add('is-open');
+        home.classList.add('is-hidden');
 
-        // Simula API
         setTimeout(() => {
             loading.classList.remove('is-open');
-            const total = parseInt(inputQty.value) * UNIT_PRICE;
+            const total = (parseInt(inputQty.value) * unitPrice).toFixed(2).replace('.',',');
             
-            // Preenche dados PIX fake
-            document.getElementById('pixCopyPaste').innerText = "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913NomeDaSuaLoja6008BRASILIA62070503***6304E2CA";
-            document.getElementById('pixTotal').innerText = total.toFixed(2).replace('.',',');
+            // Dados PIX Simulados (Sem nome Draccu)
+            const code = "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913SORTEIOS_BR6008BRASILIA62070503***6304E2CA";
+            document.getElementById('pixCopyPaste').innerText = code;
+            document.getElementById('pixTotal').innerText = total;
             document.getElementById('pixBuyer').innerText = document.getElementById('ckName').value;
             document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
+            document.getElementById('pixQrImg').src = "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" + encodeURIComponent(code);
 
-            // Inicia Timer fake
-            let timer = 545; // segundos
-            const timerEl = document.getElementById('pixTimer');
+            // Timer PIX
+            let t = 545;
+            const tEl = document.getElementById('pixTimer');
             setInterval(() => {
-                if(timer > 0) {
-                    timer--;
-                    let m = Math.floor(timer/60).toString().padStart(2,'0');
-                    let s = (timer%60).toString().padStart(2,'0');
-                    timerEl.innerText = `${m}:${s}`;
-                }
+                if(t>0) { t--; tEl.innerText = `${Math.floor(t/60).toString().padStart(2,'0')}:${(t%60).toString().padStart(2,'0')}`; }
             }, 1000);
 
-            pix.classList.add('is-open'); // Abre PIX
+            pix.classList.add('is-open');
         }, 2000);
-    });
+    };
 
-    // Copiar PIX
-    document.getElementById('pixCopyBtn').addEventListener('click', function(){
-        const txt = document.getElementById('pixCopyPaste').innerText;
-        navigator.clipboard.writeText(txt);
+    // Copiar e Toggle
+    document.getElementById('pixCopyBtn').onclick = function(){
+        navigator.clipboard.writeText(document.getElementById('pixCopyPaste').innerText);
         this.innerText = "COPIADO!";
         setTimeout(() => this.innerText = "COPIAR", 1500);
-    });
-
-    // Toggle QR
-    document.getElementById('pixToggleBtn').addEventListener('click', function(){
+    };
+    document.getElementById('pixToggleBtn').onclick = function(){
         const qr = document.getElementById('pixQrWrap');
-        if(qr.style.display === 'block') {
-            qr.style.display = 'none';
-            this.innerText = "Mostrar QR Code";
-        } else {
-            qr.style.display = 'block';
-            this.innerText = "Ocultar QR Code";
-            // Coloca um QR fake do google charts
-            document.getElementById('pixQrImg').src = "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" + encodeURIComponent(document.getElementById('pixCopyPaste').innerText);
-        }
-    });
+        const show = qr.style.display === 'block';
+        qr.style.display = show ? 'none' : 'block';
+        this.innerText = show ? "Mostrar QR Code" : "Ocultar QR Code";
+    };
 
-    // Formata Telefone
-    document.querySelectorAll('input[type="tel"]').forEach(input => {
-        input.addEventListener('input', function(e) {
+    // Mascara Telefone
+    document.querySelectorAll('input[type="tel"]').forEach(i => {
+        i.oninput = (e) => {
             let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-        });
+            e.target.value = !x[2] ? x[1] : `(${x[1]}) ${x[2]}${x[3]?'-'+x[3]:''}`;
+        };
     });
 });
 </script>
