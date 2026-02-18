@@ -567,9 +567,8 @@
 </div>
 
 <script>
-// Lógica de Scripts Unificada (COM CARROSSEL FUNCIONANDO)
 document.addEventListener('DOMContentLoaded', function(){
-    // 1. CARROSSEL DE IMAGENS (Lógica Nova)
+    // 1. CARROSSEL DE IMAGENS
     const slides = [
         '/public/images/principal.jpg',
         '/public/images/secund.jpg',
@@ -580,40 +579,21 @@ document.addEventListener('DOMContentLoaded', function(){
     const counter = document.getElementById('imageCounter');
 
     function updateSlide() {
-        imgSingle.style.backgroundImage = `url('${slides[currentIndex]}')`;
-        counter.innerText = `${currentIndex + 1}/${slides.length}`;
+        if(imgSingle) imgSingle.style.backgroundImage = `url('${slides[currentIndex]}')`;
+        if(counter) counter.innerText = `${currentIndex + 1}/${slides.length}`;
     }
 
-    document.getElementById('prevSlide').addEventListener('click', () => {
+    document.getElementById('prevSlide')?.addEventListener('click', () => {
         currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
         updateSlide();
     });
 
-    document.getElementById('nextSlide').addEventListener('click', () => {
+    document.getElementById('nextSlide')?.addEventListener('click', () => {
         currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
         updateSlide();
     });
 
-    // 2. Timer Promoção
-    const finalDate = new Date("2026-12-31T23:59:59");
-    const totalTime = finalDate - new Date("2026-01-01T00:00:00");
-    if (document.querySelector('.progress-bar-inner')) {
-        const timerEl = document.createElement('p');
-        timerEl.classList.add('timer');
-        document.querySelector('.progress-bar-double-chance').appendChild(timerEl);
-        document.querySelector('.progress-bar-double-chance').style.display = 'block';
-        setInterval(() => {
-            const remain = finalDate - new Date();
-            if (remain <= 0) { timerEl.innerText = 'FINALIZADO'; return; }
-            const h = Math.floor(remain/3600000).toString().padStart(2,'0');
-            const m = Math.floor((remain%3600000)/60000).toString().padStart(2,'0');
-            const s = Math.floor((remain%60000)/1000).toString().padStart(2,'0');
-            timerEl.innerText = `ENCERRA EM ${h}:${m}:${s}`;
-            document.querySelector('.progress-bar-inner').style.width = `${(1 - remain/totalTime)*100}%`;
-        }, 1000);
-    }
-
-    // 3. Caixas Surpresas
+    // 2. Caixas Surpresas - Mostrar Mais
     window.csShowMore = function(){
         const box = document.getElementById('csBox');
         if(!box) return;
@@ -621,7 +601,7 @@ document.addEventListener('DOMContentLoaded', function(){
         document.getElementById('csMoreBtn').style.display = 'none';
     };
 
-    // 4. Modais Prêmios
+    // 3. Modais Prêmios
     const prizeBtn = document.getElementById('prize-open');
     const modalPrize = document.getElementById('modal-prizes');
     if(prizeBtn && modalPrize){
@@ -629,41 +609,48 @@ document.addEventListener('DOMContentLoaded', function(){
         modalPrize.querySelector('.bi-x-lg').onclick = () => modalPrize.style.display = 'none';
     }
 
-    // 5. Quantidade e Checkout
+    // 4. Quantidade e Preço
     const inputQty = document.querySelector('.input-quantity');
     const priceEl = document.querySelector('.price-participate');
-    const unitPrice = parseFloat(document.querySelector('.price-value')?.innerText.replace(',','.') || 0.03);
+    const unitPrice = 0.03; // Definido fixo conforme seu HTML (R$ 0,03)
 
     function updatePrice() {
-        let q = parseInt(inputQty.value) || 1;
-        if(q<1) q=1; inputQty.value = q;
-        priceEl.innerText = (q * unitPrice).toFixed(2).replace('.',',');
+        if(!inputQty || !priceEl) return;
+        let q = parseInt(inputQty.value) || 0;
+        if(q < 1) q = 1;
+        inputQty.value = q;
+        priceEl.innerText = (q * unitPrice).toFixed(2).replace('.', ',');
     }
 
+    // Botões de seleção rápida (+100, +350...)
     document.querySelectorAll('.select').forEach(sel => {
         sel.onclick = () => {
-            inputQty.value = parseInt(sel.querySelector('h3').innerText);
-            updatePrice();
+            const val = sel.querySelector('h3')?.innerText;
+            if(val) {
+                inputQty.value = parseInt(val);
+                updatePrice();
+            }
         }
     });
     
+    // Botões de Spins
     document.querySelectorAll('.spins-content').forEach(spin => {
         spin.onclick = () => {
-            const val = spin.querySelector('[class^="spin-value"]');
+            const val = spin.querySelector('[class^="spin-value"]')?.innerText;
             if(val) {
-                inputQty.value = parseInt(val.innerText);
+                inputQty.value = parseInt(val);
                 updatePrice();
-                document.querySelector('.btn-add-to-cart').click();
+                document.querySelector('.btn-add-to-cart')?.click();
             }
         }
     });
 
-    document.querySelector('.js-qty-minus')?.addEventListener('click', ()=>{ inputQty.value--; updatePrice(); });
-    document.querySelector('.js-qty-plus')?.addEventListener('click', ()=>{ inputQty.value++; updatePrice(); });
+    document.querySelector('.js-qty-minus')?.addEventListener('click', () => { inputQty.value = Math.max(1, parseInt(inputQty.value) - 1); updatePrice(); });
+    document.querySelector('.js-qty-plus')?.addEventListener('click', () => { inputQty.value = parseInt(inputQty.value) + 1; updatePrice(); });
     inputQty?.addEventListener('input', updatePrice);
     updatePrice();
 
-    // 6. Fluxo Checkout
+    // 5. Fluxo Checkout
     const step1 = document.getElementById('ckStep1');
     const step2 = document.getElementById('ckStep2');
     const step3 = document.getElementById('ckStep3');
@@ -671,189 +658,95 @@ document.addEventListener('DOMContentLoaded', function(){
     const pix = document.getElementById('ckPix');
     const home = document.getElementById('pageHome');
 
-    const open = (el) => { el.classList.add('is-open'); document.body.classList.add('modal-travado'); };
+    const openModal = (el) => { el.classList.add('is-open'); document.body.classList.add('modal-travado'); };
     const closeAll = () => { 
-        [step1,step2,step3].forEach(el => el.classList.remove('is-open')); 
+        [step1, step2, step3, loading, pix].forEach(el => el?.classList.remove('is-open')); 
         document.body.classList.remove('modal-travado'); 
     };
 
     document.querySelector('.btn-add-to-cart').onclick = (e) => {
         e.preventDefault();
         document.getElementById('ckQty').innerText = inputQty.value;
-        open(step1);
+        openModal(step1);
     };
 
     document.querySelectorAll('[data-ck-close]').forEach(b => b.onclick = closeAll);
 
     document.getElementById('ckGoStep2').onclick = () => {
         const ph = document.getElementById('ckPhone').value;
-        if(ph.length < 8) return alert('Telefone inválido');
+        if(ph.length < 14) return alert('Informe um telefone válido com DDD');
         document.getElementById('ckPhone2').value = ph;
         document.getElementById('ckQty2').innerText = inputQty.value;
-        closeAll(); open(step2);
+        closeAll(); openModal(step2);
     };
 
-    document.getElementById('ckBackTo1').onclick = () => { closeAll(); open(step1); };
+    document.getElementById('ckBackTo1').onclick = (e) => { e.preventDefault(); closeAll(); openModal(step1); };
 
     document.getElementById('ckGoStep3').onclick = () => {
         const p1 = document.getElementById('ckPhone2').value;
         const p2 = document.getElementById('ckPhoneConfirm').value;
         const nm = document.getElementById('ckName').value;
-        if(p1!==p2) return alert('Telefones não conferem');
-        if(!nm) return alert('Digite seu nome');
+        if(p1 !== p2) return alert('Os telefones não coincidem');
+        if(nm.length < 3) return alert('Digite seu nome completo');
         document.getElementById('ckNameShow').innerText = nm;
         document.getElementById('ckPhoneShow').innerText = p1;
         document.getElementById('ckQty3').innerText = inputQty.value;
-        closeAll(); open(step3);
+        closeAll(); openModal(step3);
     };
 
-    document.getElementById('ckChangeAccount').onclick = () => { closeAll(); open(step2); };
+    document.getElementById('ckChangeAccount').onclick = (e) => { e.preventDefault(); closeAll(); openModal(step2); };
 
-   document.getElementById('ckCreatePayment').onclick = async () => {
-  closeAll();
-  loading.classList.add('is-open');
-  home.classList.add('is-hidden');
+    // 6. Geração do PIX (Simulação ou integração API)
+    document.getElementById('ckCreatePayment').onclick = async () => {
+        closeAll();
+        loading.classList.add('is-open');
+        home.classList.add('is-hidden');
 
-  try {
-    const qty = parseInt(inputQty.value, 10) || 1;
-    const totalNumber = +(qty * unitPrice).toFixed(2);
+        // Simulação de delay de processamento
+        setTimeout(() => {
+            loading.classList.remove('is-open');
+            
+            const total = (parseInt(inputQty.value) * unitPrice).toFixed(2);
+            document.getElementById('pixTotal').innerText = total.replace('.', ',');
+            document.getElementById('pixBuyer').innerText = document.getElementById('ckName').value;
+            document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
+            document.getElementById('pixCopyPaste').innerText = "00020101021226850014br.gov.bcb.pix0123ExemploChavePix5204000053039865404" + total;
 
-    const payload = {
-      amount: totalNumber,
-      buyerName: document.getElementById('ckName').value,
-      buyerPhone: document.getElementById('ckPhone2').value,
-      product: "ROLETAS PREMIADAS",
-      qty
-    };
-
-    const res = await fetch('/api/pix', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data?.error || 'Falha ao gerar Pix');
-
-    loading.classList.remove('is-open');
-
-    document.getElementById('pixCopyPaste').innerText = data.copiaecola || '—';
-    document.getElementById('pixTotal').innerText = totalNumber.toFixed(2).replace('.', ',');
-    document.getElementById('pixBuyer').innerText = payload.buyerName || '—';
-    document.getElementById('pixProductCard').innerText = payload.product || '—';
-
-    const qrImg = document.getElementById('pixQrImg');
-    if (data.qrCodeBase64) {
-      qrImg.src = `data:image/png;base64,${data.qrCodeBase64}`;
-    } else if (data.qrCodeUrl) {
-      qrImg.src = data.qrCodeUrl;
-    } else {
-      qrImg.removeAttribute('src');
-    }
-
-    let t = parseInt(data.expiresInSeconds || 600, 10);
-    const tEl = document.getElementById('pixTimer');
-    const timerId = setInterval(() => {
-      if (t > 0) {
-        t--;
-        tEl.innerText =
-          `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
-      } else {
-        clearInterval(timerId);
-      }
-    }, 1000);
-
-    pix.classList.add('is-open');
-
-  } catch (err) {
-    loading.classList.remove('is-open');
-    home.classList.remove('is-hidden');
-    alert('Erro ao gerar Pix: ' + (err?.message || err));
-  }
-};
-
-
-    const res = await fetch('/api/pix', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data?.error || 'Falha ao gerar Pix');
-
-    loading.classList.remove('is-open');
-
-    // Copia e cola
-    document.getElementById('pixCopyPaste').innerText = data.copiaecola || '—';
-
-    // Total / comprador / produto
-    document.getElementById('pixTotal').innerText = totalNumber.toFixed(2).replace('.', ',');
-    document.getElementById('pixBuyer').innerText = payload.buyerName || '—';
-    document.getElementById('pixProductCard').innerText = payload.product || '—';
-
-    // QR Code (preferência: base64 > url)
-    const qrImg = document.getElementById('pixQrImg');
-    if (data.qrCodeBase64) {
-      qrImg.src = `data:image/png;base64,${data.qrCodeBase64}`;
-    } else if (data.qrCodeUrl) {
-      qrImg.src = data.qrCodeUrl;
-    } else {
-      qrImg.removeAttribute('src');
-    }
-
-    // Timer
-    let t = parseInt(data.expiresInSeconds || 600, 10);
-    const tEl = document.getElementById('pixTimer');
-    const timerId = setInterval(() => {
-      if (t > 0) {
-        t--;
-        tEl.innerText =
-          `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
-      } else {
-        clearInterval(timerId);
-      }
-    }, 1000);
-
-    pix.classList.add('is-open');
-
-  } catch (err) {
-    loading.classList.remove('is-open');
-    home.classList.remove('is-hidden');
-    alert('Erro ao gerar Pix: ' + (err?.message || err));
-  }
-};
-
-
-            // Timer PIX
-            let t = 545;
+            // Timer do Pix (10 min)
+            let timeLeft = 600;
             const tEl = document.getElementById('pixTimer');
-            setInterval(() => {
-                if(t>0) { t--; tEl.innerText = `${Math.floor(t/60).toString().padStart(2,'0')}:${(t%60).toString().padStart(2,'0')}`; }
+            const timerInterval = setInterval(() => {
+                if(timeLeft <= 0) { clearInterval(timerInterval); return; }
+                timeLeft--;
+                tEl.innerText = `${Math.floor(timeLeft/60).toString().padStart(2,'0')}:${(timeLeft%60).toString().padStart(2,'0')}`;
             }, 1000);
 
             pix.classList.add('is-open');
         }, 2000);
     };
 
-    // Copiar e Toggle
+    // Botão Copiar Pix
     document.getElementById('pixCopyBtn').onclick = function(){
-        navigator.clipboard.writeText(document.getElementById('pixCopyPaste').innerText);
+        const code = document.getElementById('pixCopyPaste').innerText;
+        navigator.clipboard.writeText(code);
+        const originalText = this.innerText;
         this.innerText = "COPIADO!";
-        setTimeout(() => this.innerText = "COPIAR", 1500);
-    };
-    document.getElementById('pixToggleBtn').onclick = function(){
-        const qr = document.getElementById('pixQrWrap');
-        const show = qr.style.display === 'block';
-        qr.style.display = show ? 'none' : 'block';
-        this.innerText = show ? "Mostrar QR Code" : "Ocultar QR Code";
+        setTimeout(() => this.innerText = originalText, 1500);
     };
 
-    // Mascara Telefone
-    document.querySelectorAll('input[type="tel"]').forEach(i => {
-        i.oninput = (e) => {
+    // Mostrar QR Code
+    document.getElementById('pixToggleBtn').onclick = function(){
+        const qr = document.getElementById('pixQrWrap');
+        const isHidden = qr.style.display === 'none' || qr.style.display === '';
+        qr.style.display = isHidden ? 'block' : 'none';
+        this.innerText = isHidden ? "Ocultar QR Code" : "Mostrar QR Code";
+    };
+
+    // Máscara de Telefone (BR)
+    document.querySelectorAll('input[type="tel"]').forEach(input => {
+        input.oninput = (e) => {
             let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-            e.target.value = !x[2] ? x[1] : `(${x[1]}) ${x[2]}${x[3]?'-'+x[3]:''}`;
+            e.target.value = !x[2] ? x[1] : `(${x[1]}) ${x[2]}${x[3] ? '-' + x[3] : ''}`;
         };
     });
 });
@@ -861,6 +754,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </body>
 </html>
+
 
 
 
