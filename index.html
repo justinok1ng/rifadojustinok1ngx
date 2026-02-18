@@ -718,13 +718,43 @@ document.addEventListener('DOMContentLoaded', function(){
             loading.classList.remove('is-open');
             const total = (parseInt(inputQty.value) * unitPrice).toFixed(2).replace('.',',');
             
-            // Dados PIX Simulados
-            const code = "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913SORTEIOS_BR6008BRASILIA62070503***6304E2CA";
-            document.getElementById('pixCopyPaste').innerText = code;
-            document.getElementById('pixTotal').innerText = total;
-            document.getElementById('pixBuyer').innerText = document.getElementById('ckName').value;
-            document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
-            document.getElementById('pixQrImg').src = "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" + encodeURIComponent(code);
+
+
+try {
+  const resp = await fetch("/api/pix/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: document.getElementById('ckName').value,
+      phone: document.getElementById('ckPhone2').value,
+      amount: parseFloat(total.replace(',', '.'))
+    })
+  });
+
+  const data = await resp.json();
+
+  if (!resp.ok) throw new Error(data.error || "Erro ao gerar PIX");
+
+  // PIX real vindo do backend
+  const code = data.qr_code;
+
+  document.getElementById('pixCopyPaste').innerText = code;
+  document.getElementById('pixTotal').innerText = total;
+  document.getElementById('pixBuyer').innerText =
+    document.getElementById('ckName').value;
+  document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
+
+  document.getElementById('pixQrImg').src =
+    "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" +
+    encodeURIComponent(code);
+
+} catch (err) {
+  alert("Erro de conexão ao gerar PIX.");
+  console.error(err);
+}
+
+
+            
 
             // Timer PIX
             let t = 545;
@@ -762,3 +792,4 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </body>
 </html>
+
