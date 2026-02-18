@@ -566,145 +566,134 @@
   </div>
 </div>
 
- <script>
-// Usamos uma função autoinvocável para evitar conflitos com outros scripts
-(function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
     const unitPrice = 0.03;
 
-    function initSite() {
-        console.log("Sistema de cliques ativado!");
-
-        // 1. FUNÇÃO DE PREÇO
-        const updatePrice = () => {
-            const inputQty = document.querySelector('.input-quantity');
-            const priceEl = document.querySelector('.price-participate');
-            if (!inputQty || !priceEl) return;
-            let q = parseInt(inputQty.value) || 1;
-            if (q < 1) q = 1;
-            inputQty.value = q;
-            priceEl.innerText = (q * unitPrice).toFixed(2).replace('.', ',');
-            if(document.getElementById('ckQty')) document.getElementById('ckQty').innerText = q;
+    // --- LOGICA DA GALERIA E DESCRIÇÃO (CORRIGIDA) ---
+    const btnDesc = document.querySelector('.btn-Description');
+    const descDiv = document.querySelector('.description');
+    if (btnDesc && descDiv) {
+        btnDesc.onclick = () => {
+            const isHidden = descDiv.style.display === 'none' || descDiv.style.display === '';
+            descDiv.style.display = isHidden ? 'block' : 'none';
         };
+    }
 
-        // 2. CONTROLE DE MODAIS (FECHAR TUDO)
-        const closeModals = () => {
-            document.querySelectorAll('.ck-overlay, #ckPix, #ckLoading').forEach(el => el.classList.remove('is-open'));
-            document.body.classList.remove('modal-travado');
-            document.getElementById('pageHome').classList.remove('is-hidden');
-        };
+    // --- CONTROLE DE MODAIS ---
+    const abrirModal = (id) => {
+        const m = document.getElementById(id);
+        if(m) { m.style.display = 'block'; m.classList.add('is-open'); document.body.classList.add('modal-travado'); }
+    };
 
-        // 3. MONITOR DE CLIQUES GLOBAL (ESCUTA TUDO)
-        document.addEventListener('click', function(e) {
-            
-            // Botão "Quero Participar"
-            if (e.target.closest('.btn-add-to-cart')) {
-                e.preventDefault();
-                updatePrice();
-                document.getElementById('ckStep1').classList.add('is-open');
-                document.body.classList.add('modal-travado');
-            }
-
-            // Fechar modais (no X ou no botão fechar)
-            if (e.target.closest('[data-ck-close]') || e.target.closest('.ck-close')) {
-                closeModals();
-            }
-
-            // Seleção de pacotes (+100, +350, etc)
-            const sel = e.target.closest('.select');
-            if (sel) {
-                const h3 = sel.querySelector('h3');
-                if (h3) {
-                    document.querySelector('.input-quantity').value = h3.innerText;
-                    updatePrice();
-                }
-            }
-
-            // Avançar para Step 2 (Telefone)
-            if (e.target.id === 'ckGoStep2') {
-                const phone = document.getElementById('ckPhone').value;
-                if (phone.length < 10) return alert("Digite um telefone válido");
-                document.getElementById('ckStep1').classList.remove('is-open');
-                document.getElementById('ckStep2').classList.add('is-open');
-                if(document.getElementById('ckPhone2')) document.getElementById('ckPhone2').value = phone;
-            }
-
-            // Avançar para Step 3 (Nome e Confirmação)
-            if (e.target.id === 'ckGoStep3') {
-                const nome = document.getElementById('ckName').value;
-                const f1 = document.getElementById('ckPhone').value;
-                const f2 = document.getElementById('ckPhoneConfirm').value;
-                if (f1 !== f2) return alert("Os telefones não coincidem");
-                if (nome.length < 3) return alert("Digite seu nome completo");
-                
-                document.getElementById('ckNameShow').innerText = nome;
-                document.getElementById('ckPhoneShow').innerText = f1;
-                document.getElementById('ckStep2').classList.remove('is-open');
-                document.getElementById('ckStep3').classList.add('is-open');
-            }
-
-            // Botão FINAL: Gerar PIX
-            if (e.target.id === 'ckCreatePayment') {
-                executarPagamento();
-            }
+    const fecharModais = () => {
+        document.querySelectorAll('.ck-overlay, #ckPix, #ckLoading').forEach(el => {
+            el.style.display = 'none'; el.classList.remove('is-open');
         });
+        document.body.classList.remove('modal-travado');
+    };
 
-        // 4. CHAMADA DA API
-        async function executarPagamento() {
-            const qty = parseInt(document.querySelector('.input-quantity').value);
-            const nome = document.getElementById('ckName').value;
-            const f1 = document.getElementById('ckPhone').value;
+    // --- ESCUTADOR GLOBAL DE CLIQUES ---
+    document.addEventListener('click', function(e) {
+        const target = e.target;
 
-            closeModals();
-            document.getElementById('ckLoading').classList.add('is-open');
-
-            try {
-                const res = await fetch('/api/pix', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        amount: +(qty * unitPrice).toFixed(2),
-                        buyerName: nome,
-                        buyerPhone: f1,
-                        qty: qty
-                    })
-                });
-
-                const data = await res.json();
-                document.getElementById('ckLoading').classList.remove('is-open');
-
-                if (res.ok) {
-                    document.getElementById('pixCopyPaste').innerText = data.copiaecola;
-                    document.getElementById('pixTotal').innerText = (qty * unitPrice).toFixed(2).replace('.', ',');
-                    if (data.qrCodeBase64) document.getElementById('pixQrImg').src = "data:image/png;base64," + data.qrCodeBase64;
-                    
-                    document.getElementById('pageHome').classList.add('is-hidden');
-                    document.getElementById('ckPix').classList.add('is-open');
-                } else {
-                    alert("Erro: " + (data.error || "Falha na API"));
-                }
-            } catch (err) {
-                document.getElementById('ckLoading').classList.remove('is-open');
-                alert("Erro ao conectar com o servidor.");
-            }
+        // Botão Quero Participar
+        if (target.closest('.btn-add-to-cart')) {
+            e.preventDefault();
+            const qty = document.querySelector('.input-quantity').value;
+            document.getElementById('ckQty').innerText = qty;
+            abrirModal('ckStep1');
         }
 
-        // Botoes + e -
-        document.querySelector('.js-qty-plus')?.addEventListener('click', () => { document.querySelector('.input-quantity').value++; updatePrice(); });
-        document.querySelector('.js-qty-minus')?.addEventListener('click', () => { if(document.querySelector('.input-quantity').value > 1) document.querySelector('.input-quantity').value--; updatePrice(); });
+        // Seleção de Títulos (+100, +350...)
+        const sel = target.closest('.select');
+        if (sel) {
+            const val = sel.querySelector('h3').innerText;
+            document.querySelector('.input-quantity').value = val;
+            const price = (parseInt(val) * unitPrice).toFixed(2).replace('.', ',');
+            document.querySelector('.price-participate').innerText = price;
+        }
+
+        // Fechar modais
+        if (target.closest('[data-ck-close]') || target.classList.contains('bi-x-lg')) {
+            fecharModais();
+        }
+
+        // Steps do Checkout
+        if (target.id === 'ckGoStep2') {
+            const p = document.getElementById('ckPhone').value;
+            if(p.length < 10) return alert("Telefone inválido");
+            fecharModais(); abrirModal('ckStep2');
+            document.getElementById('ckPhone2').value = p;
+        }
+
+        if (target.id === 'ckGoStep3') {
+            const n = document.getElementById('ckName').value;
+            const c = document.getElementById('ckPhoneConfirm').value;
+            if (n.length < 3 || c !== document.getElementById('ckPhone2').value) return alert("Verifique os dados");
+            document.getElementById('ckNameShow').innerText = n;
+            fecharModais(); abrirModal('ckStep3');
+        }
+
+        if (target.id === 'ckCreatePayment') {
+            gerarPix();
+        }
+    });
+
+    // --- CHAMADA DA SUA API ---
+    async function gerarPix() {
+        const qty = document.querySelector('.input-quantity').value;
+        const nome = document.getElementById('ckName').value;
+        const fone = document.getElementById('ckPhone').value;
+
+        fecharModais();
+        abrirModal('ckLoading');
+
+        try {
+            const res = await fetch('/api/pix', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: +(qty * unitPrice).toFixed(2),
+                    buyerName: nome,
+                    buyerPhone: fone,
+                    qty: qty
+                })
+            });
+
+            const data = await res.json();
+            fecharModais();
+
+            if (res.ok) {
+                document.getElementById('pixCopyPaste').innerText = data.copiaecola;
+                document.getElementById('pixTotal').innerText = (qty * unitPrice).toFixed(2).replace('.',',');
+                if(data.qrCodeBase64) document.getElementById('pixQrImg').src = "data:image/png;base64," + data.qrCodeBase64;
+                document.getElementById('pageHome').style.display = 'none';
+                abrirModal('ckPix');
+            } else {
+                alert("Erro: " + data.error);
+                document.getElementById('pageHome').style.display = 'block';
+            }
+        } catch (err) {
+            fecharModais();
+            alert("Erro de conexão com o servidor.");
+        }
     }
 
-    // Executa assim que o DOM estiver pronto
-    if (document.readyState === "complete" || document.readyState === "interactive") {
-        initSite();
-    } else {
-        document.addEventListener("DOMContentLoaded", initSite);
-    }
-})();
+    // Máscara Simples
+    document.addEventListener('input', (e) => {
+        if(e.target.type === 'tel') {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        }
+    });
+});
 </script>
 
 
 </body>
 </html>
+
 
 
 
