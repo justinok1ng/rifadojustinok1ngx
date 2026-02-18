@@ -6,515 +6,313 @@
     <title>ROLETAS PREMIADAS</title>
     
     <meta name="description" content="Filantropia premiável.">
-    <meta name="keywords" content="Campanha, Rifa, Ação entre amigos, Prêmio">
     <meta name="robots" content="index, follow">
 
     <meta property="og:title" content="ROLETAS PREMIADAS">
-    <meta property="og:description" content="Sua chance de mudar de vida chegou!">
     <meta property="og:image" content="/public/images/principal.jpg">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Sorteios Online">
-
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
     <link rel="stylesheet" type="text/css" href="/public/css/main.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* CSS de Emergência */
-        body { background-color: #161c24; color: #fff; }
+        body { background-color: #161c24; color: #fff; font-family: 'Roboto', sans-serif; }
         body.modal-travado { overflow:hidden !important; }
-        #pageHome.is-hidden { display:none !important; pointer-events: none !important; user-select: none !important; }
+        #pageHome.is-hidden { display:none !important; }
 
-        /* PIX e LOADING */
-        #ckPix, #ckLoading {
-            position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important;
-            z-index: 2147483647 !important; background: rgba(0,0,0,.75) !important;
-            opacity: 0; pointer-events: none; transition: opacity .25s ease; display: none;
+        /* Modais */
+        .ck-overlay, #ckPix, #ckLoading {
+            position: fixed; inset: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,.85); z-index: 99999; display: none;
+            justify-content: center; align-items: center;
         }
-        #ckPix.is-open, #ckLoading.is-open { opacity: 1; pointer-events: auto; display: block !important; }
+        .ck-overlay.is-open, #ckPix.is-open, #ckLoading.is-open { display: flex; }
 
-        /* Estilos Gerais */
-        .cs-box { background: #1f2832; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 10px; color: #fff; font-family: system-ui, -apple-system, sans-serif; max-width: 560px; position: relative; z-index: 999; }
-        .cs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .cs-title { display: flex; gap: 8px; font-weight: 800; font-size: 14px; }
-        .cs-title small { color: rgba(255,255,255,.35); font-size: 11px; }
-        .cs-badge { background: #10161d; border: 1px solid rgba(255,255,255,.12); color: #ff3b3b; font-weight: 900; font-size: 11px; padding: 2px 7px; border-radius: 9px; }
-        .cs-list { display: flex; flex-direction: column; gap: 6px; }
-        .cs-row { background: #161c24; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 6px 10px; display: flex; align-items: center; justify-content: space-between; min-height: 30px; }
-        .cs-row.winner { background: #ff3b3b; border: none; }
-        .cs-pill { display: inline-flex; align-items: center; gap: 6px; background: #919eab; padding: 2px 8px; border-radius: 9px; font-weight: 900; font-size: 11px; color: #ffffff; }
-        .cs-row.winner .cs-pill { background: #ffffff; border: 2px solid #ff3b3b; color: #0b0f14; }
-        .cs-phone { font-size: 12px; }
-        .cs-right { display: flex; align-items: center; gap: 6px; font-weight: 900; font-size: 11px; color: #ffffff; }
-        .cs-status { color: rgba(255,255,255,.9); }
-        .cs-more-btn { margin-top: 8px; width: 100%; background: transparent; border: none; color: #ff3b3b; font-weight: 900; font-size: 11px; cursor: pointer; position: relative; z-index: 999999; pointer-events: auto; padding: 6px 0; }
-        .cs-row.is-hidden { display: none; }
+        /* Card Central */
+        .ck-card {
+            background: #1a2330; width: 90%; max-width: 500px;
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden; position: relative;
+        }
+        .ck-header {
+            padding: 15px; background: #151c26; border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between; align-items: center; font-weight: bold;
+        }
+        .ck-body { padding: 20px; }
+        
+        /* Inputs */
+        .ck-row {
+            background: #0f1722; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center;
+        }
+        .ck-input {
+            width: 100%; background: transparent; border: none; color: #fff;
+            padding: 12px; outline: none;
+        }
+        .ck-label { font-size: 12px; color: #aaa; margin-bottom: 5px; margin-top: 10px; }
+        
+        /* Botões */
+        .ck-btn {
+            width: 100%; background: #ff3b3b; color: #fff; border: none;
+            padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 20px; cursor: pointer;
+        }
+        .ck-close { cursor: pointer; font-size: 20px; }
 
-        /* Checkout Styles */
-        .ck-overlay { display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.75); z-index: 2147483647; }
-        .ck-overlay.is-open { display: block; }
-        .ck-card { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: min(720px, 92vw); background: #1a2330; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.75); overflow: hidden; font-family: system-ui, sans-serif; color: #e5e7eb; }
-        .ck-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #1f2a38; border-bottom: 1px solid rgba(255,255,255,.07); font-weight: 900; }
-        .ck-header .left { display: flex; align-items: center; gap: 10px; }
-        .ck-close { background: transparent; border: none; color: rgba(255,255,255,.65); font-size: 22px; cursor: pointer; line-height: 1; }
-        .ck-body { padding: 14px 16px 16px; }
-        .ck-alert { display: flex; align-items: center; gap: 10px; border-radius: 10px; padding: 12px; font-size: 13px; line-height: 1.35; border: 1px solid rgba(255,255,255,.10); margin-bottom: 12px; }
-        .ck-alert.blue { background: #133b78; color: #e6f0ff; }
-        .ck-alert.yellow { background: #7b5a00; color: #fff; }
-        .ck-alert.green { background: #0f6a3b; color: #fff; }
-        .ck-alert .i { width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.18); font-weight: 900; font-size: 12px; flex: 0 0 auto; }
-        .ck-label { color: rgba(255,255,255,.70); font-size: 12px; margin: 10px 0 6px; }
-        .ck-row { display: flex; align-items: center; gap: 10px; background: #0f1722; border: 1px solid rgba(255,255,255,.10); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
-        .ck-country { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); padding: 8px 10px; border-radius: 8px; font-weight: 900; color: #fff; white-space: nowrap; flex: 0 0 auto; }
-        .ck-input { width: 100%; border: none; outline: none; background: transparent; color: #fff; font-size: 14px; }
-        .ck-input::placeholder { color: rgba(255,255,255,.35); }
-        .ck-terms { font-size: 11px; color: rgba(255,255,255,.55); line-height: 1.35; margin: 10px 0 12px; }
-        .ck-terms a { color: #ff4a4a; text-decoration: none; font-weight: 900; }
-        .ck-btn { width: 100%; border: none; cursor: pointer; background: #ff3b3b; color: #fff; font-weight: 900; padding: 14px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .ck-link { display: block; text-align: center; margin-top: 10px; color: #ff4a4a; font-weight: 900; text-decoration: none; font-size: 13px; }
+        /* Loading */
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #ff3b3b; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Loading & Pix */
-        .ck-loading-wrap { width: min(720px, 92vw); margin: 0 auto; padding: 90px 0 0; }
-        .ck-loading-box { background: #1f2a38; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 24px 18px; color: #fff; display: flex; align-items: center; gap: 16px; justify-content: center; }
-        .ck-dots { display: flex; gap: 8px; align-items: center; }
-        .ck-dots span { width: 8px; height: 8px; border-radius: 999px; background: #ff3b3b; opacity: .25; animation: dot 1s infinite; }
-        .ck-dots span:nth-child(2) { animation-delay: .15s; }
-        .ck-dots span:nth-child(3) { animation-delay: .30s; }
-        @keyframes dot { 0%, 100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-4px); } }
-
-        .pix-card { width: min(720px, 92vw); margin: 20px auto 60px; background: #1a2330; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 60px rgba(0,0,0,.45); }
-        .pix-header { padding: 16px; background: #1f2a38; border-bottom: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 900; }
-        .pix-body { padding: 16px; color: #e5e7eb; }
-        .pix-steps { margin-top: 12px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 12px; }
-        .pix-step { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; }
-        .pix-step .n { width: 22px; height: 22px; border-radius: 999px; background: #ff3b3b; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; flex: 0 0 auto; font-size: 12px; }
-        .pix-code-row { display: flex; gap: 10px; align-items: center; background: #0f1722; border: 1px solid rgba(255,255,255,.10); border-radius: 10px; padding: 10px; margin: 12px 0; }
-        .pix-code { flex: 1; font-family: ui-monospace, monospace; font-size: 12px; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .pix-copy { border: none; cursor: pointer; background: #ff3b3b; color: #fff; font-weight: 900; padding: 10px 12px; border-radius: 10px; }
-        .pix-qr-wrap { text-align: center; margin-top: 12px; display: none; }
-        .pix-qr-wrap img { width: 200px; max-width: 80vw; background: #fff; padding: 12px; border-radius: 10px; margin: 0 auto; display: block; }
-        .pix-toggle { display: flex; justify-content: center; margin-top: 10px; }
-        .pix-toggle button { border: none; cursor: pointer; background: #2a3442; color: #fff; font-weight: 900; padding: 10px 14px; border-radius: 10px; }
-        .pix-warn { margin-top: 12px; background: #7b5a00; border: 1px solid rgba(255,255,255,.10); color: #fff; border-radius: 10px; padding: 12px; font-size: 12px; line-height: 1.35; }
-
-        .container-double-chance { background: linear-gradient(90deg, #1a1a1a, #484848); }
-        .progress-bar-inner { height: 40px; width: 100%; background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #313131 10px, #313131 20px); background-size: 195% 140%; animation: progress-animation 3s linear infinite; }
-        .progress-bar-double-chance { background-color: #1a1a1a; }
+        /* Estilos do Site (Simplificado) */
+        .container { max-width: 600px; margin: 0 auto; padding: 0; }
+        .img-single { width: 100%; height: 250px; background-size: cover; background-position: center; }
+        .background-gradient { padding: 15px; background: linear-gradient(to bottom, #1f2832, #161c24); }
+        .select-single { padding: 15px; }
+        .content-select { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .select { background: #000; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; border: 1px solid #333; }
+        .select:hover { border-color: #ff3b3b; }
+        .add-to-cart { background: #1f2832; padding: 15px; border-radius: 12px; margin-top: 10px; }
+        .quantity-input { display: flex; justify-content: space-between; align-items: center; background: #0f1722; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .btn-add-to-cart { width: 100%; background: #28a745; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 18px; }
+        
+        /* PIX Screen */
+        .pix-code-box { background: #0f1722; padding: 10px; border-radius: 8px; word-break: break-all; font-size: 12px; font-family: monospace; margin: 10px 0; border: 1px dashed #555; }
+        .pix-copy-btn { background: #ff3b3b; color: #fff; border: none; padding: 5px 15px; border-radius: 5px; font-size: 12px; margin-left: 10px; }
+        #pixQrWrap { background: #fff; padding: 10px; display: inline-block; margin-top: 15px; border-radius: 8px; }
     </style>
 </head>
 
-<body style="background-color: #161c24;">
-<div id="pageHome">
-    <nav style="background-color: #1a1a1a;">
-        <div class="container-nav">
-            <div class="header-nav">
-                <a href="/">
-                    <img src="/public/images/logo.png" alt="logo" style="max-height: 40px;">
-                </a>
-                <img src="/public/images/menu.svg" width="30px" class="bi bi-filter-right" id="showPopupButton">
-            </div>
+<body>
 
-            <div class="popup-nav" style="background-color: #1a1a1a;">
-                <div class="container-popup-nav">
-                    <div class="header-popup">
-                        <a href="/"><img src="/public/images/logo.png" alt="logo" style="max-height: 40px;"></a>
-                        <i class="bi bi-x-circle" id="closePopupButton"></i>
-                    </div>
-                    
-                    <div class="options-nav">
-                        <ul>
-                            <li><a href="#"><i class="icone bi bi-house"></i>Início</a></li>
-                            <li><a href="#"><i class="icone bi bi-trophy"></i>Ganhadores</a></li>
-                            <li><a href="#"><i class="icone bi bi-envelope"></i>Entrar em contato</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div id="pageHome">
+    <nav style="background: #1a1a1a; padding: 15px; text-align: center;">
+        <img src="/public/images/logo.png" style="height: 30px;">
     </nav>
 
-    <h5 class="title-head" style="display: none;">ROLETAS PREMIADAS</h5>
-
-    <section>
-        <div class="back-range" style="background-color: #1a1a1a;"></div>
-        <div class="container" style="padding: 0; background-color: #1f2832; border: none;">
-            
-            <div class="info-single">
-                <div class="carousel-controls">
-                    <i class="bi bi-caret-left-fill slide-control" id="prevSlide"></i>
-                    <span id="imageCounter">1/3</span>
-                    <i class="bi bi-caret-right-fill slide-control" id="nextSlide"></i>
-                </div>
-
-                <div class="img-single" id="imgSingle" style="border: none; background-image: url('/public/images/principal.jpg'); background-size: cover; background-position: center;"></div>
-                
-                <div class="background-gradient" style="border-left: none; border-right: none;">
-                    <span class="badge-adquira" style="background-color: #1a1a1a">Adquira já!</span>
-                    <h3>COROLLA XEI 2020</h3>
-                    <p>PARTICIPE E CONCORRA!</p>
-                </div>
-                
-                <div class="date-price">
-                    <span class="price-single">
-                        <p style="color: #ffffffde;">Por apenas </p>
-                        <div style="background-color: #1a1a1a;">
-                            R$ <span class="price-value">0,03</span>
-                        </div>
-                    </span>
-                </div>
-
-                <div style="padding: 0 10px 40px 10px;">
-                    <div class="prizes">
-                        <button id="prize-open" style="background-color: #6c757d; color: #fff; display: flex; gap: 7px; width: 100%; border: none; border-radius: 5px; justify-content: center; padding: 5px; font-size: .9em; margin-top: 7px; outline: none;"><i class="bi bi-trophy"></i>Prêmios</button>
-                        <div id="modal-prizes" style="display: none;">
-                            <div class="content-modal-prize" style="background-color: #fff; border:none; padding:15px; border-radius:10px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                    <h4 style="color:#000; margin:0;">Prêmios</h4>
-                                    <i class="bi bi-x-lg" style="color:#000; cursor:pointer; font-size:20px;"></i>
-                                </div>
-                                <div style="color:#000;">
-                                    <p>1º R$3.000</p>
-                                    <p>2º Moto 0KM</p>
-                                    <p>3º R$2.000</p>
-                                    <p>4º R$5.000</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="double-chance-date-initial" data-initial="2026-01-01T00:00:00" style="display:none;"></div>
-                    <div class="double-chance-date-final" data-final="2026-12-31T23:59:59" style="display:none;"></div>
-                    <div class="progress-bar-double-chance" style="display:none;"><div class="progress-bar-inner"></div></div>
-                    
-                    <div class="select-single">
-                        <p style="color: #ffffff;background-color: ##6c757d; border: none;">Quanto mais títulos, mais chances de ganhar!</p>
-                        <div class="content-select">
-                            <div class="select" data-val="100" style="background-color: #000; color: #fff; cursor:pointer;"><span>+<h3>100</h3></span><p>SELECIONAR</p></div>
-                            <div class="select" data-val="350" style="background-color: #e9d1c3; color: #000; border: 2px solid #ff3b3b; cursor:pointer;"><button style="background-color:#ff3030;">Popular</button><span>+<h3>350</h3></span><p>SELECIONAR</p></div>
-                            <div class="select" data-val="500" style="background-color: #000; color: #fff; cursor:pointer;"><span>+<h3>500</h3></span><p>SELECIONAR</p></div>
-                            <div class="select" data-val="1000" style="background-color: #000; color: #fff; cursor:pointer;"><span>+<h3>1000</h3></span><p>SELECIONAR</p></div>
-                            <div class="select" data-val="5000" style="background-color: #000; color: #fff; cursor:pointer;"><span>+<h3>5000</h3></span><p>SELECIONAR</p></div>
-                            <div class="select" data-val="10000" style="background-color: #000; color: #fff; cursor:pointer;"><span>+<h3>10000</h3></span><p>SELECIONAR</p></div>
-                        </div>
-
-                        <div class="add-to-cart">
-                            <div style="background-color:#1f2832; border:1px solid rgba(255,255,255,0.15); border-radius:12px;" class="quantity-input">
-                                <i class="bi bi-dash-circle js-qty-minus" style="color:#ffffff; cursor:pointer;"></i>
-                                <input class="input-quantity" type="number" value="100" style="background-color:#1f2832; border:1px solid #3a4754; color:#ffffff;">
-                                <i class="bi bi-plus-circle-fill js-qty-plus" style="color:#ffffff; cursor:pointer;"></i>
-                            </div>
-                            <button type="button" class="btn-add-to-cart" style="background-color: rgb(255, 59, 59); padding: 12px 16px; gap: 10px; display: flex; align-items: center; width: 100%; border: none; border-radius: 12px; opacity: 1;">
-                                <i class="bi bi-check-circle" style="color:#ffffff; font-size:20px; margin-right:10px;"></i>
-                                <span>
-                                    <h3>Quero Participar</h3>
-                                    <span class="participate" style="color:#ffffff;">R$ <p class="price-participate" style="color:#ffffff; display:inline;">3,00</p></span>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="cs-box" id="csBox" style="margin-top:20px;">
-                        <div class="cs-header">
-                            <div class="cs-title"><span>🎁</span><span>Caixas Surpresas</span><small>ganhadores</small></div>
-                            <div class="cs-badge">4/15</div>
-                        </div>
-                        <div class="cs-list" id="csList">
-                            <div class="cs-row winner"><span class="cs-pill">📱 Poco c71</span><div class="cs-right">Josefa 🏆</div></div>
-                            <div class="cs-row"><span class="cs-pill">📱 Poco c71</span><div class="cs-right" style="opacity:0.8">Disponível</div></div>
-                            <div class="cs-row"><span class="cs-pill">📱 Poco c71</span><div class="cs-right" style="opacity:0.8">Disponível</div></div>
-                            <div class="cs-row winner"><span class="cs-pill">📱 Note 60</span><div class="cs-right">Felipe 🏆</div></div>
-                            <div class="cs-row is-hidden"><span class="cs-pill">📱 Poco c71</span><div class="cs-right" style="opacity:0.8">Disponível</div></div>
-                            <div class="cs-row is-hidden"><span class="cs-pill">📱 Poco c71</span><div class="cs-right" style="opacity:0.8">Disponível</div></div>
-                        </div>
-                        <button type="button" class="cs-more-btn" id="csMoreBtn">˅ Mostrar Mais</button>
-                    </div>
-                </div>
-                <div class="socials-icons"><span></span></div>
+    <div class="container">
+        <div class="img-single" id="imgSingle" style="background-image: url('/public/images/principal.jpg');"></div>
+        
+        <div class="background-gradient">
+            <h3>ROLETAS PREMIADAS</h3>
+            <p style="color: #ccc;">Sua chance de mudar de vida!</p>
+            <div style="background: #000; padding: 5px 10px; display: inline-block; border-radius: 5px;">
+                Por apenas <strong>R$ 0,03</strong>
             </div>
         </div>
-    </section>
+
+        <div class="select-single">
+            <p>Selecione a quantidade:</p>
+            <div class="content-select">
+                <div class="select" onclick="setQty(100)">+100</div>
+                <div class="select" onclick="setQty(350)" style="border-color: #ff3b3b;">+350 (Popular)</div>
+                <div class="select" onclick="setQty(500)">+500</div>
+                <div class="select" onclick="setQty(1000)">+1000</div>
+                <div class="select" onclick="setQty(5000)">+5000</div>
+                <div class="select" onclick="setQty(10000)">+10000</div>
+            </div>
+
+            <div class="add-to-cart">
+                <div class="quantity-input">
+                    <i class="bi bi-dash-circle" onclick="changeQty(-1)" style="font-size: 24px; cursor: pointer;"></i>
+                    <input type="number" id="inputQty" value="100" style="background: transparent; border: none; color: #fff; text-align: center; font-size: 20px; width: 100px;">
+                    <i class="bi bi-plus-circle-fill" onclick="changeQty(1)" style="font-size: 24px; cursor: pointer;"></i>
+                </div>
+                <button class="btn-add-to-cart" id="btnBuy">
+                    PARTICIPAR <span id="btnPrice">R$ 3,00</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="ckStep1" class="ck-overlay" aria-hidden="true">
-  <div class="ck-card" role="dialog" aria-modal="true" aria-label="Checkout">
-    <div class="ck-header">
-      <div class="left"><span class="ck-title">Checkout</span></div>
-      <button class="ck-close" type="button"><i class="bi bi-x-lg"></i></button>
-    </div>
-    <div class="ck-body">
-      <div class="ck-alert blue">
-        <div class="i">i</div>
-        <div>Você está adquirindo <b id="ckQty">100</b> unidade(s) do produto <b id="ckProduct">ROLETAS PREMIADAS</b></div>
-      </div>
-      <div class="ck-label">Informe seu telefone *</div>
-      <div class="ck-row">
-        <div class="ck-country"><img class="ck-flag" src="https://flagcdn.com/w20/br.png" alt="BR"><span class="ck-caret">⌄</span></div>
-        <input id="ckPhone" class="ck-input" type="tel" inputmode="numeric" maxlength="15" placeholder="(DDD) 9XXXX-XXXX" autocomplete="tel">
-      </div>
-      <button class="ck-btn" id="ckGoStep2" type="button">Concluir Reserva</button>
-    </div>
-  </div>
-</div>
+<div id="ckStep1" class="ck-overlay">
+    <div class="ck-card">
+        <div class="ck-header">Checkout <span class="ck-close" onclick="closeAll()">×</span></div>
+        <div class="ck-body">
+            <div class="ck-alert blue" style="background: #1e3a5f; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px;">
+                Você está adquirindo <b id="lblQty">100</b> cotas.
+            </div>
+            
+            <div class="ck-label">Seu Nome Completo</div>
+            <div class="ck-row"><input type="text" id="ckName" class="ck-input" placeholder="Digite seu nome"></div>
 
-<div id="ckStep2" class="ck-overlay" aria-hidden="true">
-  <div class="ck-card" role="dialog" aria-modal="true" aria-label="Confirmar dados">
-    <div class="ck-header">
-      <div class="left"><span class="ck-title">Checkout</span></div>
-      <button class="ck-close" type="button"> <i class="bi bi-x-lg"></i> </button>
-    </div>
-    <div class="ck-body">
-      <div class="ck-alert blue"><div class="i">i</div><div>Confirme seus dados</div></div>
-      <div class="ck-label">Telefone</div>
-      <div class="ck-row"><div class="ck-country"><img class="ck-flag" src="https://flagcdn.com/w20/br.png" alt="BR"></div><input id="ckPhone2" class="ck-input" type="tel" readonly></div>
-      <div class="ck-label">Confirme o Telefone</div>
-      <div class="ck-row"><div class="ck-country"><img class="ck-flag" src="https://flagcdn.com/w20/br.png" alt="BR"></div><input id="ckPhoneConfirm" class="ck-input" type="tel" placeholder="Repita o telefone"></div>
-      <div class="ck-label">Nome Completo</div>
-      <div class="ck-row"><input id="ckName" class="ck-input" type="text" placeholder="Nome Completo"></div>
-      <div class="ck-label">CPF</div>
-      <div class="ck-row"><input id="ckCpf" class="ck-input" type="text" placeholder="000.000.000-00" maxlength="14"></div>
-      <div class="ck-label">Email</div>
-      <div class="ck-row"><input id="ckEmail" class="ck-input" type="email" placeholder="seu@email.com"></div>
+            <div class="ck-label">Seu CPF (Apenas números)</div>
+            <div class="ck-row"><input type="tel" id="ckCpf" class="ck-input" placeholder="000.000.000-00" maxlength="14"></div>
 
-      <button class="ck-btn" id="ckCreatePayment" type="button">Concluir Reserva</button>
-      <a href="#" class="ck-link" id="ckBackTo1">Voltar</a>
+            <div class="ck-label">Seu E-mail</div>
+            <div class="ck-row"><input type="email" id="ckEmail" class="ck-input" placeholder="seu@email.com"></div>
+
+            <button class="ck-btn" id="btnPay">GERAR PIX</button>
+        </div>
     </div>
-  </div>
 </div>
 
 <div id="ckLoading">
-  <div class="ck-loading-wrap">
-    <div class="ck-loading-box">
-      <div class="ck-dots"><span></span><span></span><span></span></div>
-      <div>
-        <div style="font-weight:900;font-size:16px;">Processando...</div>
-        <div style="opacity:.8;font-size:13px;">Gerando seu PIX...</div>
-      </div>
+    <div class="ck-card" style="text-align: center; padding: 30px;">
+        <div class="loader"></div>
+        <p>Conectando com o servidor...</p>
+        <p style="font-size: 12px; color: #aaa;">Isso pode levar alguns segundos.</p>
     </div>
-  </div>
 </div>
 
 <div id="ckPix">
-  <div class="pix-card">
-    <div class="pix-header">⏳ Aguardando pagamento!</div>
-    <div class="pix-body">
-      <div style="opacity:.9;font-size:13px;">Realize o pagamento</div>
-      <div style="margin:10px 0 14px;opacity:.85;text-align:center;">Você tem <b id="pixTimer">09:05</b> para pagar</div>
-      <div class="pix-steps">
-        <div class="pix-step"><div class="n">1</div><div>Copie o código PIX abaixo.</div></div>
-        <div class="pix-code-row">
-          <div id="pixCopyPaste" class="pix-code">Carregando...</div>
-          <button class="pix-copy" id="pixCopyBtn">COPIAR</button>
+    <div class="ck-card">
+        <div class="ck-header">Pagamento PIX <span class="ck-close" onclick="closeAll()">×</span></div>
+        <div class="ck-body" style="text-align: center;">
+            <p style="font-size: 14px; color: #aaa;">Copie o código abaixo e pague no seu banco:</p>
+            
+            <div class="pix-code-box" style="display: flex; align-items: center; justify-content: space-between;">
+                <span id="pixText" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">...</span>
+                <button class="pix-copy-btn" onclick="copyPix()">COPIAR</button>
+            </div>
+
+            <div id="pixQrWrap"></div>
+            
+            <p style="margin-top: 15px; font-size: 12px; color: #aaa;">Após pagar, aguarde a confirmação automática.</p>
+            
+            <button class="ck-btn" style="background: #444;" onclick="closeAll()">FECHAR</button>
         </div>
-        <div class="pix-step"><div class="n">2</div><div>Abra o app do seu banco e pague via PIX Copia e Cola.</div></div>
-        <div class="pix-toggle"><button id="pixToggleBtn">Mostrar QR Code</button></div>
-        <div class="pix-qr-wrap" id="pixQrWrap"></div>
-        <div class="pix-warn">⚠️ Pagamento só pode ser realizado dentro do tempo.</div>
-        <div style="margin-top:14px;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:#1f2a38;">
-          <div style="font-weight:900;color:#fff;" id="pixProductCard"></div>
-          <div style="margin-top:8px;font-size:13px;">
-            <div><b>Comprador:</b> <span id="pixBuyer">—</span></div>
-            <div><b>Total:</b> R$ <span id="pixTotal">—</span></div>
-          </div>
-        </div>
-        <div class="ck-link" onclick="location.reload()" style="cursor:pointer; margin-top:20px;">Fechar</div>
-      </div>
     </div>
-  </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-    console.log("Script carregado!");
-
-    // === COLOQUE SUA CHAVE AQUI ===
+    // ==================================================
+    // ⚠️ CONFIGURAÇÃO DA API ⚠️
+    // Coloque sua chave secreta aqui dentro das aspas:
     const ABACASH_SECRET_KEY = "SUA_SECRET_KEY"; 
-    // ==============================
+    // ==================================================
 
-    // 1. CARROSSEL
-    const slides = ['/public/images/principal.jpg', '/public/images/secund.jpg', '/public/images/terci.jpg'];
-    let currentIndex = 0;
-    const imgSingle = document.getElementById('imgSingle');
-    const counter = document.getElementById('imageCounter');
+    const UNIT_PRICE = 0.03;
+    let currentQty = 100;
 
-    function updateSlide() {
-        if(imgSingle) imgSingle.style.backgroundImage = `url('${slides[currentIndex]}')`;
-        if(counter) counter.innerText = `${currentIndex + 1}/${slides.length}`;
-    }
-    if(document.getElementById('prevSlide')) document.getElementById('prevSlide').onclick = () => { currentIndex = (currentIndex===0)?slides.length-1:currentIndex-1; updateSlide(); };
-    if(document.getElementById('nextSlide')) document.getElementById('nextSlide').onclick = () => { currentIndex = (currentIndex===slides.length-1)?0:currentIndex+1; updateSlide(); };
-
-    // 2. TIMER PROMOÇÃO
-    if(document.querySelector('.progress-bar-double-chance')){
-        document.querySelector('.progress-bar-double-chance').style.display='block';
-        const tEl = document.createElement('p'); tEl.className='timer';
-        document.querySelector('.progress-bar-double-chance').appendChild(tEl);
-        const end = new Date("2026-12-31T23:59:59");
-        setInterval(()=>{
-            const r = end - new Date();
-            if(r<=0) { tEl.innerText="ACABOU"; return; }
-            const h = Math.floor(r/3600000).toString().padStart(2,'0');
-            const m = Math.floor((r%3600000)/60000).toString().padStart(2,'0');
-            const s = Math.floor((r%60000)/1000).toString().padStart(2,'0');
-            tEl.innerText = `ENCERRA EM ${h}:${m}:${s}`;
-            document.querySelector('.progress-bar-inner').style.width = '80%'; 
-        }, 1000);
-    }
-
-    // 3. BOTÕES LÓGICA
-    const inputQty = document.querySelector('.input-quantity');
-    const priceEl = document.querySelector('.price-participate');
-    const unitPrice = 0.03;
-
+    // --- Lógica de Quantidade e Preço ---
     function updatePrice() {
-        let q = parseInt(inputQty.value)||1;
-        if(q<1) q=1; inputQty.value = q;
-        priceEl.innerText = (q * unitPrice).toFixed(2).replace('.',',');
+        const total = (currentQty * UNIT_PRICE).toFixed(2).replace('.', ',');
+        document.getElementById('inputQty').value = currentQty;
+        document.getElementById('btnPrice').innerText = `R$ ${total}`;
+        document.getElementById('lblQty').innerText = currentQty;
     }
 
-    document.querySelectorAll('.select').forEach(el => {
-        el.addEventListener('click', function(){
-            inputQty.value = parseInt(this.getAttribute('data-val'));
-            updatePrice();
-        });
-    });
-
-    if(document.querySelector('.js-qty-minus')) document.querySelector('.js-qty-minus').addEventListener('click', ()=>{ inputQty.value--; updatePrice(); });
-    if(document.querySelector('.js-qty-plus')) document.querySelector('.js-qty-plus').addEventListener('click', ()=>{ inputQty.value++; updatePrice(); });
-    if(inputQty) inputQty.addEventListener('input', updatePrice);
-    updatePrice();
-
-    // 4. MODAL PRÊMIOS
-    const pBtn = document.getElementById('prize-open');
-    const pModal = document.getElementById('modal-prizes');
-    if(pBtn && pModal) {
-        pBtn.onclick = ()=> pModal.style.display='flex';
-        pModal.querySelector('.bi-x-lg').onclick = ()=> pModal.style.display='none';
+    function setQty(val) {
+        currentQty = val;
+        updatePrice();
     }
 
-    // 5. CAIXAS SURPRESAS
-    const csBtn = document.getElementById('csMoreBtn');
-    if(csBtn) csBtn.onclick = function(){
-        document.querySelectorAll('.cs-row.is-hidden').forEach(e=>e.classList.remove('is-hidden'));
-        this.style.display='none';
-    };
+    function changeQty(amount) {
+        currentQty += amount;
+        if(currentQty < 1) currentQty = 1;
+        updatePrice();
+    }
 
-    // 6. CHECKOUT FLUXO
-    const modals = {
-        s1: document.getElementById('ckStep1'),
-        s2: document.getElementById('ckStep2'),
-        load: document.getElementById('ckLoading'),
-        pix: document.getElementById('ckPix')
-    };
-    function closeAll(){ Object.values(modals).forEach(m=>m.classList.remove('is-open')); document.body.classList.remove('modal-travado'); }
-    function open(el){ el.classList.add('is-open'); document.body.classList.add('modal-travado'); }
-
-    document.querySelector('.btn-add-to-cart').addEventListener('click', (e)=>{
-        e.preventDefault();
-        document.getElementById('ckQty').innerText = inputQty.value;
-        open(modals.s1);
+    document.getElementById('inputQty').addEventListener('input', (e) => {
+        let val = parseInt(e.target.value);
+        if(val > 0) currentQty = val;
+        updatePrice();
     });
 
-    document.querySelectorAll('.ck-close').forEach(b=>b.onclick=closeAll);
+    // --- Lógica de Modais ---
+    function closeAll() {
+        document.querySelectorAll('.ck-overlay, #ckPix, #ckLoading').forEach(el => el.classList.remove('is-open'));
+        document.body.classList.remove('modal-travado');
+    }
 
-    document.getElementById('ckGoStep2').addEventListener('click', ()=>{
-        const ph = document.getElementById('ckPhone').value;
-        if(ph.length < 8) return alert('Telefone inválido');
-        document.getElementById('ckPhone2').value = ph;
-        closeAll(); open(modals.s2);
-    });
+    // Botão "Quero Participar"
+    document.getElementById('btnBuy').onclick = () => {
+        document.getElementById('ckStep1').classList.add('is-open');
+        document.body.classList.add('modal-travado');
+    };
 
-    document.getElementById('ckBackTo1').onclick = ()=>{ closeAll(); open(modals.s1); };
-
-    // 7. INTEGRAÇÃO API (Com Fallback)
-    document.getElementById('ckCreatePayment').addEventListener('click', async ()=>{
+    // --- INTEGRAÇÃO API (Fetch baseado no seu código Node) ---
+    document.getElementById('btnPay').onclick = async () => {
         const name = document.getElementById('ckName').value;
-        const phone2 = document.getElementById('ckPhone2').value;
-        const phoneConf = document.getElementById('ckPhoneConfirm').value;
-        const cpf = document.getElementById('ckCpf').value.replace(/\D/g,'');
+        const cpf = document.getElementById('ckCpf').value.replace(/\D/g, '');
         const email = document.getElementById('ckEmail').value;
 
-        if(phone2 !== phoneConf) return alert('Telefones não conferem');
-        if(!name || !cpf || !email) return alert('Preencha todos os campos!');
+        if(!name || !cpf || !email) {
+            alert("Por favor, preencha todos os campos!");
+            return;
+        }
 
-        closeAll();
-        open(modals.load);
+        // Fecha checkout e abre loading
+        document.getElementById('ckStep1').classList.remove('is-open');
+        document.getElementById('ckLoading').classList.add('is-open');
 
-        const amount = parseFloat((parseInt(inputQty.value)*unitPrice).toFixed(2));
+        const amountVal = parseFloat((currentQty * UNIT_PRICE).toFixed(2));
 
         try {
-            // Tenta chamar API
+            // AQUI ESTÁ A LÓGICA DO SEU NODE.JS CONVERTIDA PARA FETCH
             const response = await fetch('https://app.abacash.com/api/payment.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sk_live_4457547444fd3627a4f715a1f6ad4fb657978c5b302e752d}`
+                    'Authorization': `Bearer ${ABACASH_SECRET_KEY}`
                 },
                 body: JSON.stringify({
                     action: "create",
-                    product_id: "rifa_01",
-                    amount: amount,
-                    customer: { name, cpf, email }
+                    product_id: "prod_123456", // Ajuste se necessário
+                    amount: amountVal,
+                    customer: {
+                        name: name,
+                        cpf: cpf,
+                        email: email
+                    }
                 })
             });
 
-            if(!response.ok) throw new Error("API Error");
             const data = await response.json();
             
-            // Dados retornados
-            const pixCode = data.pix_copy_paste || data.pix_code || "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913SORTEIOS_BR6008BRASILIA62070503***6304E2CA"; // fallback se vier vazio
-            showPix(pixCode, amount, name);
+            // Debug no console para você ver o retorno real
+            console.log("Retorno da API:", data);
 
-        } catch (e) {
-            console.error(e);
-            // Fallback Visual (Para não travar o usuário se a API bloquear CORS)
-            // alert("Nota: Exibindo PIX gerado localmente (Simulação de Erro de API/CORS)");
-            const fakePix = "00020126580014BR.GOV.BCB.PIX0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913SORTEIOS_BR6008BRASILIA62070503***6304E2CA";
-            showPix(fakePix, amount, name);
+            // Verifica se deu erro
+            if (!response.ok || data.error) {
+                throw new Error(data.message || "Erro na criação do PIX");
+            }
+
+            // Pega o código PIX do retorno (ajuste o campo conforme o retorno real)
+            // Geralmente vem em 'pix_copy_paste', 'qrcode', ou 'payment_code'
+            const pixCode = data.pix_copy_paste || data.qrcode || data.pix || "Erro: Código PIX não encontrado no retorno";
+
+            showPixScreen(pixCode);
+
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            document.getElementById('ckLoading').classList.remove('is-open');
+            alert("Erro ao gerar PIX: " + error.message);
+            document.getElementById('ckStep1').classList.add('is-open'); // Volta pro form
         }
-    });
+    };
 
-    function showPix(code, val, buyer){
-        modals.load.classList.remove('is-open');
-        open(modals.pix);
+    function showPixScreen(code) {
+        document.getElementById('ckLoading').classList.remove('is-open');
+        document.getElementById('ckPix').classList.add('is-open');
         
-        document.getElementById('pixCopyPaste').innerText = code;
-        document.getElementById('pixTotal').innerText = val.toFixed(2).replace('.',',');
-        document.getElementById('pixBuyer').innerText = buyer;
-        document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
-
+        // Preenche o código
+        document.getElementById('pixText').innerText = code;
+        
+        // Gera o QR Code visual
         const qrBox = document.getElementById('pixQrWrap');
         qrBox.innerHTML = '';
-        new QRCode(qrBox, { text: code, width: 200, height: 200 });
-
-        // Timer e Copiar
-        let t = 545;
-        const tEl = document.getElementById('pixTimer');
-        setInterval(()=>{ if(t>0){ t--; tEl.innerText=`${Math.floor(t/60).toString().padStart(2,'0')}:${(t%60).toString().padStart(2,'0')}`; } }, 1000);
-
-        document.getElementById('pixCopyBtn').onclick = function(){
-            navigator.clipboard.writeText(code);
-            this.innerText="COPIADO!";
-            setTimeout(()=>this.innerText="COPIAR", 1500);
-        };
-        document.getElementById('pixToggleBtn').onclick = function(){
-            const q = document.getElementById('pixQrWrap');
-            q.style.display = (q.style.display==='none' || q.style.display==='') ? 'block' : 'none';
-            this.innerText = (q.style.display==='block') ? "Ocultar QR Code" : "Mostrar QR Code";
-        };
+        new QRCode(qrBox, {
+            text: code,
+            width: 200,
+            height: 200
+        });
     }
 
-    // Mascaras
-    document.querySelectorAll('input[type="tel"]').forEach(i => {
-        i.oninput = (e) => {
-            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-            e.target.value = !x[2] ? x[1] : `(${x[1]}) ${x[2]}${x[3]?'-'+x[3]:''}`;
-        };
+    function copyPix() {
+        const text = document.getElementById('pixText').innerText;
+        navigator.clipboard.writeText(text);
+        alert("Código PIX copiado!");
+    }
+
+    // Máscara simples para CPF (visual)
+    document.getElementById('ckCpf').addEventListener('input', function(e) {
+        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,2})/);
+        e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + (x[4] ? '-' + x[4] : '');
     });
-});
+
 </script>
 
 </body>
