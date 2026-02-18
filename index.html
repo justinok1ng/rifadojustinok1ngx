@@ -709,63 +709,70 @@ document.addEventListener('DOMContentLoaded', function(){
 
     document.getElementById('ckChangeAccount').onclick = () => { closeAll(); open(step2); };
 
-    document.getElementById('ckCreatePayment').onclick = () => {
-        closeAll();
-        loading.classList.add('is-open');
-        home.classList.add('is-hidden');
+    document.getElementById('ckCreatePayment').onclick = async () => {
+  closeAll();
+  loading.classList.add('is-open');
+  home.classList.add('is-hidden');
 
-        setTimeout(() => {
-            loading.classList.remove('is-open');
-            const total = (parseInt(inputQty.value) * unitPrice).toFixed(2).replace('.',',');
-            
+  try {
+    // calcula total
+    const totalNumber = (parseInt(inputQty.value) * unitPrice);
+    const totalBR = totalNumber.toFixed(2).replace('.', ',');
 
+    // chama seu backend (quando existir)
+    const resp = await fetch("/api/pix/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: document.getElementById('ckName').value,
+        phone: document.getElementById('ckPhone2').value,
+        amount: Number(totalNumber.toFixed(2))
+      })
+    });
 
-try {
-  const resp = await fetch("/api/pix/create", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: document.getElementById('ckName').value,
-      phone: document.getElementById('ckPhone2').value,
-      amount: parseFloat(total.replace(',', '.'))
-    })
-  });
+    const data = await resp.json().catch(() => ({}));
 
-  const data = await resp.json();
+    if (!resp.ok) {
+      throw new Error(data.error || "Falha ao gerar PIX");
+    }
 
-  if (!resp.ok) throw new Error(data.error || "Erro ao gerar PIX");
+    // aqui o backend deve retornar o copia e cola
+    const code = data.qr_code || data.qr_code_text || data.pix_code;
 
-  // PIX real vindo do backend
-  const code = data.qr_code;
+    if (!code) throw new Error("API não retornou qr_code");
 
-  document.getElementById('pixCopyPaste').innerText = code;
-  document.getElementById('pixTotal').innerText = total;
-  document.getElementById('pixBuyer').innerText =
-    document.getElementById('ckName').value;
-  document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
+    loading.classList.remove('is-open');
 
-  document.getElementById('pixQrImg').src =
-    "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" +
-    encodeURIComponent(code);
+    document.getElementById('pixCopyPaste').innerText = code;
+    document.getElementById('pixTotal').innerText = totalBR;
+    document.getElementById('pixBuyer').innerText = document.getElementById('ckName').value;
+    document.getElementById('pixProductCard').innerText = "ROLETAS PREMIADAS";
+    document.getElementById('pixQrImg').src =
+      "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" + encodeURIComponent(code);
 
-} catch (err) {
-  alert("Erro de conexão ao gerar PIX.");
-  console.error(err);
-}
+    // Timer PIX (reinicia)
+    let t = 545;
+    const tEl = document.getElementById('pixTimer');
+    tEl.innerText = "09:05";
+    const interval = setInterval(() => {
+      if (t > 0) {
+        t--;
+        tEl.innerText = `${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
+      } else {
+        clearInterval(interval);
+      }
+    }, 1000);
 
+    pix.classList.add('is-open');
 
-            
+  } catch (err) {
+    loading.classList.remove('is-open');
+    home.classList.remove('is-hidden');
+    alert("Erro de conexão ao gerar PIX.");
+    console.error("PIX ERROR:", err);
+  }
+};
 
-            // Timer PIX
-            let t = 545;
-            const tEl = document.getElementById('pixTimer');
-            setInterval(() => {
-                if(t>0) { t--; tEl.innerText = `${Math.floor(t/60).toString().padStart(2,'0')}:${(t%60).toString().padStart(2,'0')}`; }
-            }, 1000);
-
-            pix.classList.add('is-open');
-        }, 2000);
-    };
 
     // Copiar e Toggle
     document.getElementById('pixCopyBtn').onclick = function(){
@@ -792,4 +799,5 @@ try {
 
 </body>
 </html>
+
 
