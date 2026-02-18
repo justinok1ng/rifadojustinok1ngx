@@ -709,16 +709,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     document.getElementById('ckChangeAccount').onclick = () => { closeAll(); open(step2); };
 
-    document.getElementById('ckCreatePayment').onclick = () => {
-        closeAll();
-        loading.classList.add('is-open');
-        home.classList.add('is-hidden');
-
-        setTimeout(() => {
-            loading.classList.remove('is-open');
-            const total = (parseInt(inputQty.value) * unitPrice).toFixed(2).replace('.',',');
-            
-document.getElementById('ckCreatePayment').onclick = async () => {
+   document.getElementById('ckCreatePayment').onclick = async () => {
   closeAll();
   loading.classList.add('is-open');
   home.classList.add('is-hidden');
@@ -734,6 +725,53 @@ document.getElementById('ckCreatePayment').onclick = async () => {
       product: "ROLETAS PREMIADAS",
       qty
     };
+
+    const res = await fetch('/api/pix', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error || 'Falha ao gerar Pix');
+
+    loading.classList.remove('is-open');
+
+    document.getElementById('pixCopyPaste').innerText = data.copiaecola || '—';
+    document.getElementById('pixTotal').innerText = totalNumber.toFixed(2).replace('.', ',');
+    document.getElementById('pixBuyer').innerText = payload.buyerName || '—';
+    document.getElementById('pixProductCard').innerText = payload.product || '—';
+
+    const qrImg = document.getElementById('pixQrImg');
+    if (data.qrCodeBase64) {
+      qrImg.src = `data:image/png;base64,${data.qrCodeBase64}`;
+    } else if (data.qrCodeUrl) {
+      qrImg.src = data.qrCodeUrl;
+    } else {
+      qrImg.removeAttribute('src');
+    }
+
+    let t = parseInt(data.expiresInSeconds || 600, 10);
+    const tEl = document.getElementById('pixTimer');
+    const timerId = setInterval(() => {
+      if (t > 0) {
+        t--;
+        tEl.innerText =
+          `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+      } else {
+        clearInterval(timerId);
+      }
+    }, 1000);
+
+    pix.classList.add('is-open');
+
+  } catch (err) {
+    loading.classList.remove('is-open');
+    home.classList.remove('is-hidden');
+    alert('Erro ao gerar Pix: ' + (err?.message || err));
+  }
+};
+
 
     const res = await fetch('/api/pix', {
       method: 'POST',
@@ -823,5 +861,6 @@ document.getElementById('ckCreatePayment').onclick = async () => {
 
 </body>
 </html>
+
 
 
