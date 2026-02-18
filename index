@@ -276,7 +276,7 @@
                         <p>Restam apenas <span class="rest-numbers">0</span> Títulos.</p>
                     </div>
                 
-                    <script src="/public/js/partials/automatic.js"></script>
+                     
 
                     <div class="description-single" style="background-color:#1f2832; border:none;">
                         <button class="btn-Description" style="width:100%; background:transparent; border:none; color:#e5e7eb; font-size:14px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 0; cursor:pointer;">
@@ -425,8 +425,7 @@
     </section>
 </div>
 
-<script src="/public/js/pages/single.js"></script>
-
+ 
 <div id="ckStep1" class="ck-overlay" aria-hidden="true">
   <div class="ck-card" role="dialog" aria-modal="true" aria-label="Checkout">
     <div class="ck-header">
@@ -567,87 +566,98 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const unitPrice = 0.03;
+// Aguarda o carregamento para garantir que os IDs existam
+window.addEventListener('load', function() {
+    console.log("Scripts reiniciados sem erros.");
 
-    // --- LOGICA DA GALERIA E DESCRIÇÃO (CORRIGIDA) ---
-    const btnDesc = document.querySelector('.btn-Description');
-    const descDiv = document.querySelector('.description');
-    if (btnDesc && descDiv) {
-        btnDesc.onclick = () => {
-            const isHidden = descDiv.style.display === 'none' || descDiv.style.display === '';
-            descDiv.style.display = isHidden ? 'block' : 'none';
-        };
+    const unitPrice = 0.03;
+    const inputQty = document.querySelector('.input-quantity');
+    const priceDisplay = document.querySelector('.price-participate');
+
+    // 1. Função de Atualização de Preço (Segura)
+    function refreshTotals() {
+        if (!inputQty || !priceDisplay) return;
+        let q = parseInt(inputQty.value) || 1;
+        if (q < 1) q = 1;
+        inputQty.value = q;
+        priceDisplay.innerText = (q * unitPrice).toFixed(2).replace('.', ',');
+        
+        // Atualiza campos nos modais
+        ['ckQty', 'ckQty2', 'ckQty3'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.innerText = q;
+        });
     }
 
-    // --- CONTROLE DE MODAIS ---
-    const abrirModal = (id) => {
-        const m = document.getElementById(id);
-        if(m) { m.style.display = 'block'; m.classList.add('is-open'); document.body.classList.add('modal-travado'); }
-    };
-
-    const fecharModais = () => {
-        document.querySelectorAll('.ck-overlay, #ckPix, #ckLoading').forEach(el => {
-            el.style.display = 'none'; el.classList.remove('is-open');
-        });
-        document.body.classList.remove('modal-travado');
-    };
-
-    // --- ESCUTADOR GLOBAL DE CLIQUES ---
+    // 2. Escutador de Cliques (Ignora erros de outros arquivos)
     document.addEventListener('click', function(e) {
-        const target = e.target;
+        const t = e.target;
 
         // Botão Quero Participar
-        if (target.closest('.btn-add-to-cart')) {
+        if (t.closest('.btn-add-to-cart')) {
             e.preventDefault();
-            const qty = document.querySelector('.input-quantity').value;
-            document.getElementById('ckQty').innerText = qty;
-            abrirModal('ckStep1');
+            refreshTotals();
+            const modal = document.getElementById('ckStep1');
+            if(modal) {
+                modal.style.display = 'block';
+                modal.classList.add('is-open');
+                document.body.classList.add('modal-travado');
+            }
+        }
+
+        // Fechar Modais
+        if (t.closest('[data-ck-close]') || t.classList.contains('bi-x-lg')) {
+            document.querySelectorAll('.ck-overlay, #ckPix, #ckLoading').forEach(m => {
+                m.style.display = 'none';
+                m.classList.remove('is-open');
+            });
+            document.body.classList.remove('modal-travado');
         }
 
         // Seleção de Títulos (+100, +350...)
-        const sel = target.closest('.select');
+        const sel = t.closest('.select');
         if (sel) {
-            const val = sel.querySelector('h3').innerText;
-            document.querySelector('.input-quantity').value = val;
-            const price = (parseInt(val) * unitPrice).toFixed(2).replace('.', ',');
-            document.querySelector('.price-participate').innerText = price;
+            const h3 = sel.querySelector('h3');
+            if(h3 && inputQty) {
+                inputQty.value = h3.innerText;
+                refreshTotals();
+            }
         }
 
-        // Fechar modais
-        if (target.closest('[data-ck-close]') || target.classList.contains('bi-x-lg')) {
-            fecharModais();
+        // Navegação entre Steps
+        if (t.id === 'ckGoStep2') {
+            const phone = document.getElementById('ckPhone').value;
+            if(phone.length < 10) return alert("Telefone inválido");
+            document.getElementById('ckStep1').style.display = 'none';
+            document.getElementById('ckStep2').style.display = 'block';
+            document.getElementById('ckPhone2').value = phone;
         }
 
-        // Steps do Checkout
-        if (target.id === 'ckGoStep2') {
-            const p = document.getElementById('ckPhone').value;
-            if(p.length < 10) return alert("Telefone inválido");
-            fecharModais(); abrirModal('ckStep2');
-            document.getElementById('ckPhone2').value = p;
+        if (t.id === 'ckGoStep3') {
+            const nome = document.getElementById('ckName').value;
+            if(nome.length < 3) return alert("Nome muito curto");
+            document.getElementById('ckStep2').style.display = 'none';
+            document.getElementById('ckStep3').style.display = 'block';
+            document.getElementById('ckNameShow').innerText = nome;
         }
 
-        if (target.id === 'ckGoStep3') {
-            const n = document.getElementById('ckName').value;
-            const c = document.getElementById('ckPhoneConfirm').value;
-            if (n.length < 3 || c !== document.getElementById('ckPhone2').value) return alert("Verifique os dados");
-            document.getElementById('ckNameShow').innerText = n;
-            fecharModais(); abrirModal('ckStep3');
-        }
-
-        if (target.id === 'ckCreatePayment') {
-            gerarPix();
+        // Botão de Pagamento (API Corrigida)
+        if (t.id === 'ckCreatePayment') {
+            document.getElementById('ckStep3').style.display = 'none';
+            const loader = document.getElementById('ckLoading');
+            loader.style.display = 'block';
+            loader.classList.add('is-open');
+            
+            // Chamar função async separada para não dar SyntaxError
+            handlePixGeneration();
         }
     });
 
-    // --- CHAMADA DA SUA API ---
-    async function gerarPix() {
-        const qty = document.querySelector('.input-quantity').value;
+    // 3. Função Async para Gerar o PIX (SEM ERRO DE AWAIT)
+    async function handlePixGeneration() {
+        const qty = parseInt(inputQty.value);
         const nome = document.getElementById('ckName').value;
-        const fone = document.getElementById('ckPhone').value;
-
-        fecharModais();
-        abrirModal('ckLoading');
+        const phone = document.getElementById('ckPhone').value;
 
         try {
             const res = await fetch('/api/pix', {
@@ -656,43 +666,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({
                     amount: +(qty * unitPrice).toFixed(2),
                     buyerName: nome,
-                    buyerPhone: fone,
+                    buyerPhone: phone,
                     qty: qty
                 })
             });
 
             const data = await res.json();
-            fecharModais();
+            document.getElementById('ckLoading').style.display = 'none';
 
             if (res.ok) {
                 document.getElementById('pixCopyPaste').innerText = data.copiaecola;
-                document.getElementById('pixTotal').innerText = (qty * unitPrice).toFixed(2).replace('.',',');
+                document.getElementById('pixTotal').innerText = (qty * unitPrice).toFixed(2).replace('.', ',');
                 if(data.qrCodeBase64) document.getElementById('pixQrImg').src = "data:image/png;base64," + data.qrCodeBase64;
+                
                 document.getElementById('pageHome').style.display = 'none';
-                abrirModal('ckPix');
+                const pixModal = document.getElementById('ckPix');
+                pixModal.style.display = 'block';
+                pixModal.classList.add('is-open');
             } else {
-                alert("Erro: " + data.error);
+                alert("Erro ao gerar Pix: " + data.error);
                 document.getElementById('pageHome').style.display = 'block';
             }
         } catch (err) {
-            fecharModais();
+            document.getElementById('ckLoading').style.display = 'none';
             alert("Erro de conexão com o servidor.");
         }
     }
 
-    // Máscara Simples
-    document.addEventListener('input', (e) => {
-        if(e.target.type === 'tel') {
-            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-        }
-    });
+    // Inicializa preço
+    refreshTotals();
 });
 </script>
 
-
 </body>
 </html>
+
 
 
 
