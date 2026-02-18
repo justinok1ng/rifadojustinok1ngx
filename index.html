@@ -246,6 +246,8 @@
     </section>
 </div>
 
+<script src="/public/js/pages/single.js"></script>
+
 <div id="ckStep1" class="ck-overlay" aria-hidden="true">
   <div class="ck-card" role="dialog" aria-modal="true" aria-label="Checkout">
     <div class="ck-header">
@@ -340,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function(){
     // ==========================================
     // ⚠️ COLOQUE SUA CHAVE AQUI ⚠️
     // ==========================================
-    const ABACASH_SECRET_KEY = "sk_live_4457547444fd3627a4f715a1f6ad4fb657978c5b302e752d"; 
+    const ABACASH_SECRET_KEY = "SUA_SECRET_KEY"; 
     // ==========================================
 
     // 1. CARROSSEL
@@ -450,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     document.getElementById('ckBackTo1').onclick = ()=>{ closeAll(); open(modals.s1); };
 
-    // 7. INTEGRAÇÃO API (Com Fallback)
+    // 7. INTEGRAÇÃO API
     document.getElementById('ckCreatePayment').addEventListener('click', async ()=>{
         const name = document.getElementById('ckName').value;
         const phone2 = document.getElementById('ckPhone2').value;
@@ -476,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 },
                 body: JSON.stringify({
                     action: "create",
-                    product_id: "rifa_01",
+                    product_id: "prod_123456",
                     amount: amount,
                     customer: { name, cpf, email }
                 })
@@ -485,10 +487,8 @@ document.addEventListener('DOMContentLoaded', function(){
             if(!response.ok) throw new Error("API Error");
             const data = await response.json();
             
-            // Dados retornados - Verifique o campo correto retornado pela API
-            // Estamos verificando se existe 'pix_copy_paste', 'pix_code', ou 'qrcode_text'
-            // Se a API não retornar nada, vai cair no erro abaixo.
-            const pixCode = data.pix_copy_paste || data.pix_code || data.qrcode_text;
+            // Dados retornados
+            const pixCode = data.pix_copy_paste || data.pix_code; // Ajuste conforme retorno real
             
             if(!pixCode) throw new Error("Código PIX não retornado pela API");
 
@@ -544,4 +544,3 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </body>
 </html>
-
