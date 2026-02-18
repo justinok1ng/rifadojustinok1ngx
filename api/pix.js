@@ -17,7 +17,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${sk_live_4457547444fd3627a4f715a1f6ad4fb657978c5b302e752d}`
+        "Authorization": `Bearer ${SECRET_KEY}`
       },
       body: JSON.stringify({
         action: "create",
